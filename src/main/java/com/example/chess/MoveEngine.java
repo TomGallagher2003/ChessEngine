@@ -4,7 +4,8 @@ import com.example.chess.type.Move;
 
 import java.util.ArrayList;
 
-import static com.example.chess.MoveUtility.copyMap;
+import static com.example.chess.InfoCollectionManager.copyMap;
+import static com.example.chess.InfoCollectionManager.copyMapMove;
 
 public class MoveEngine {
     MoveUtility moveUtil = new MoveUtility();
@@ -56,8 +57,6 @@ public class MoveEngine {
 
     public static Double pieceTotalMove(Move move, ArrayList<ArrayList<Double>> map){
         ArrayList<ArrayList<Double>> ifMap = copyMap(map);
-        ifMap.get(move.getNewRow()).set(move.getNewCol(), ifMap.get(move.getOldRow()).get(move.getOldCol()));
-        ifMap.get(move.getOldRow()).set(move.getOldCol(), 0.0);
         return pieceTotal(ifMap);
     }
     public static Double pieceTotal(ArrayList<ArrayList<Double>> map) {
@@ -68,5 +67,72 @@ public class MoveEngine {
             }
         }
         return sum;
+    }
+    private double minimax(ArrayList<ArrayList<Double>> map, int depth, double alpha, double beta, boolean playerWhite) {
+        if (depth == 0) {
+            // Return evaluation of the current board state
+            return pieceTotal(map);
+        }
+
+        if (playerWhite) {
+            double bestScore = Double.NEGATIVE_INFINITY;
+            // Generate all possible moves for the maximizing player
+            ArrayList<Move> legalMoves = moveUtil.generateLegalMoves(true, map);
+            for (Move move : legalMoves) {
+                ArrayList<ArrayList<Double>> newMap = copyMapMove(map, move);
+                double score = minimax(newMap, depth - 1, alpha, beta, false);
+                bestScore = Math.max(bestScore, score);
+                alpha = Math.max(alpha, bestScore); // Update alpha
+                if (beta <= alpha) {
+                    break; // Beta cut-off
+                }
+            }
+            return bestScore;
+        } else {
+            double bestScore = Double.POSITIVE_INFINITY;
+            // Generate all possible moves for the minimizing player
+            ArrayList<Move> legalMoves = moveUtil.generateLegalMoves(false, map);
+            for (Move move : legalMoves) {
+                ArrayList<ArrayList<Double>> newMap = copyMapMove(map, move);
+                double score = minimax(newMap, depth - 1, alpha, beta, true);
+                bestScore = Math.min(bestScore, score);
+                beta = Math.min(beta, bestScore); // Update beta
+                if (beta <= alpha) {
+                    break; // Alpha cut-off
+                }
+            }
+            return bestScore;
+        }
+    }
+
+    public Move getNiceMove(boolean playerWhite, ArrayList<ArrayList<Double>> map, int depth) {
+        Move bestMove = null;
+        double bestScore = playerWhite ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+        double alpha = Double.NEGATIVE_INFINITY; // Initialize alpha
+        double beta = Double.POSITIVE_INFINITY; // Initialize beta
+
+        // Generate all possible moves for the current player
+        ArrayList<Move> legalMoves = moveUtil.generateLegalMoves(playerWhite, map);
+
+        // Iterate over each possible move and evaluate using Minimax with alpha-beta pruning
+        for (Move move : legalMoves) {
+            ArrayList<ArrayList<Double>> newMap = copyMapMove(map, move); // Make the move on a copy of the board
+            double score = minimax(newMap, depth - 1, alpha, beta, false); // Minimax search
+            // Update the best move if necessary
+            if ((playerWhite && score > bestScore) || (!playerWhite && score < bestScore)) {
+                bestScore = score;
+                bestMove = move;
+            }
+            if (playerWhite) {
+                alpha = Math.max(alpha, bestScore); // Update alpha
+            } else {
+                beta = Math.min(beta, bestScore); // Update beta
+            }
+            if (beta <= alpha) {
+                break; // Beta cut-off
+            }
+        }
+
+        return bestMove;
     }
 }

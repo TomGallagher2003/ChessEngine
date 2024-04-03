@@ -1,6 +1,10 @@
 package com.example.chess;
 
+import com.example.chess.type.Move;
+
 import java.util.ArrayList;
+
+import static com.example.chess.InfoCollectionManager.copyMap;
 
 public class MoveUtility {
 
@@ -240,15 +244,23 @@ public class MoveUtility {
         }
         return false;
     }
-    public static ArrayList<ArrayList<Double>> copyMap( ArrayList<ArrayList<Double>> map){
-        ArrayList<ArrayList<Double>> ifMap = new ArrayList<>();
-        for(int row = 0; row < 8; row++){
-            ArrayList<Double> line = new ArrayList<>();
-            for(int col = 0; col < 8; col++){
-                line.add(Double.valueOf(map.get(row).get(col)));
+    public ArrayList<Move> generateLegalMoves(boolean white, ArrayList<ArrayList<Double>> map){
+        ArrayList<Move> resultMap = new ArrayList<>();
+        for(int oldRow = 0; oldRow < 8; oldRow++){
+            ArrayList<Boolean> temp = new ArrayList<>();
+            for(int oldCol = 0; oldCol < 8; oldCol++){
+                for(int row = 0; row < 8; row++){
+                    for(int col = 0; col < 8; col++){
+                        if(isValidMove(oldRow, oldCol, row, col, map)){
+                            resultMap.add(new Move(oldRow, oldCol, row, col));
+                        }
+
+                    }
+                }
             }
-            ifMap.add(line);
         }
-        return ifMap;
+
+        return resultMap;
     }
+
 }

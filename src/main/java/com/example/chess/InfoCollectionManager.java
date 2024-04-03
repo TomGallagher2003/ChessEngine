@@ -1,5 +1,7 @@
 package com.example.chess;
 
+import com.example.chess.type.Move;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,5 +73,29 @@ public class InfoCollectionManager {
     }
     public String getImage(Double piece){
         return imageDict.get(piece);
+    }
+    public static ArrayList<ArrayList<Double>> copyMap( ArrayList<ArrayList<Double>> map){
+        ArrayList<ArrayList<Double>> ifMap = new ArrayList<>();
+        for(int row = 0; row < 8; row++){
+            ArrayList<Double> line = new ArrayList<>();
+            for(int col = 0; col < 8; col++){
+                line.add(Double.valueOf(map.get(row).get(col)));
+            }
+            ifMap.add(line);
+        }
+        return ifMap;
+    }
+    public static ArrayList<ArrayList<Double>> copyMapMove( ArrayList<ArrayList<Double>> map, Move move){
+        ArrayList<ArrayList<Double>> ifMap = new ArrayList<>();
+        for(int row = 0; row < 8; row++){
+            ArrayList<Double> line = new ArrayList<>();
+            for(int col = 0; col < 8; col++){
+                line.add(Double.valueOf(map.get(row).get(col)));
+            }
+            ifMap.add(line);
+        }
+        ifMap.get(move.getNewRow()).set(move.getNewCol(), ifMap.get(move.getOldRow()).get(move.getOldCol()));
+        ifMap.get(move.getOldRow()).set(move.getOldCol(), 0.0);
+        return ifMap;
     }
 }
