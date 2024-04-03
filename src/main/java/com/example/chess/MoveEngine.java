@@ -1,6 +1,7 @@
 package com.example.chess;
 
 import com.example.chess.type.Move;
+import com.example.chess.type.KillerHeuristic;
 
 import java.util.ArrayList;
 
@@ -74,11 +75,15 @@ public class MoveEngine {
             return pieceTotal(map);
         }
 
+        ArrayList<Move> killerMoves = KillerHeuristic.getKillerMoves(depth);
+
         if (playerWhite) {
             double bestScore = Double.NEGATIVE_INFINITY;
             // Generate all possible moves for the maximizing player
             ArrayList<Move> legalMoves = moveUtil.generateLegalMoves(true, map);
-            for (Move move : legalMoves) {
+            // Prioritize killer moves in move ordering
+            ArrayList<Move> orderedMoves = prioritizeKillerMoves(legalMoves, killerMoves);
+            for (Move move : orderedMoves) {
                 ArrayList<ArrayList<Double>> newMap = copyMapMove(map, move);
                 double score = minimax(newMap, depth - 1, alpha, beta, false);
                 bestScore = Math.max(bestScore, score);
@@ -92,7 +97,9 @@ public class MoveEngine {
             double bestScore = Double.POSITIVE_INFINITY;
             // Generate all possible moves for the minimizing player
             ArrayList<Move> legalMoves = moveUtil.generateLegalMoves(false, map);
-            for (Move move : legalMoves) {
+            // Prioritize killer moves in move ordering
+            ArrayList<Move> orderedMoves = prioritizeKillerMoves(legalMoves, killerMoves);
+            for (Move move : orderedMoves) {
                 ArrayList<ArrayList<Double>> newMap = copyMapMove(map, move);
                 double score = minimax(newMap, depth - 1, alpha, beta, true);
                 bestScore = Math.min(bestScore, score);
@@ -105,6 +112,24 @@ public class MoveEngine {
         }
     }
 
+    // Function to prioritize killer moves in move ordering
+    private ArrayList<Move> prioritizeKillerMoves(ArrayList<Move> legalMoves, ArrayList<Move> killerMoves) {
+        ArrayList<Move> orderedMoves = new ArrayList<>();
+        // Add killer moves first
+        for (Move killerMove : killerMoves) {
+            if (legalMoves.contains(killerMove)) {
+                orderedMoves.add(killerMove);
+            }
+        }
+        // Add remaining legal moves
+        for (Move move : legalMoves) {
+            if (!orderedMoves.contains(move)) {
+                orderedMoves.add(move);
+            }
+        }
+        return orderedMoves;
+
+    }
     public Move getNiceMove(boolean playerWhite, ArrayList<ArrayList<Double>> map, int depth) {
         Move bestMove = null;
         double bestScore = playerWhite ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;

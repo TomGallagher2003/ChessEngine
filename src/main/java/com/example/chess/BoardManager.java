@@ -20,12 +20,15 @@ public class BoardManager {
     boolean playerTurn;
     boolean playerWhite;
     MoveEngine engine = new MoveEngine();
+    int moveCount = 0;
+    int depth;
 
 
-    public BoardManager(GridPane pane, boolean white){
+    public BoardManager(GridPane pane, boolean white, int depth){
         this.root = pane;
         this.playerTurn = white;
         this.playerWhite = white;
+        this.depth = depth;
 
 
     }
@@ -132,6 +135,9 @@ public class BoardManager {
                     GridPane.setColumnIndex(selectedPiece, clickedCol);
                     collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
                     clearSelect();
+                    if(moveUtil.isJustCastled()){
+                        castle(clickedRow, clickedCol);
+                    }
                     onPlayerMove();
                 }
 
@@ -201,12 +207,13 @@ public class BoardManager {
         playerTurn = true;
     }
     public void makeEngineMove(){
-        Move move = engine.getNiceMove(playerWhite, collectionManager.pieceMap, 5);
+        Move move = engine.getNiceMove(playerWhite, collectionManager.pieceMap, depth);
         purgeSquare(move.getNewRow(), move.getNewCol());
         collectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol());
         Circle piece = findPiece(move.getOldRow(), move.getOldCol());
         GridPane.setRowIndex(piece, move.getNewRow());
         GridPane.setColumnIndex(piece, move.getNewCol());
+        moveCount +=1;
     }
 
     public Circle findPiece(int row, int col){
@@ -220,6 +227,30 @@ public class BoardManager {
             }
         }
         return null;
+    }
+    public void castle(int row, int col) {
+        if (row == 0) {
+            if (col == 6) {
+                collectionManager.movePiece(0, 7, 0, 5);
+                Circle piece = findPiece(0, 7);
+                GridPane.setColumnIndex(piece, 5);
+            } else {
+                collectionManager.movePiece(0, 0, 0, 3);
+                Circle piece = findPiece(0, 0);
+                GridPane.setColumnIndex(piece, 3);
+            }
+        } else {
+            if (col == 6) {
+                collectionManager.movePiece(7, 7, 7, 5);
+                Circle piece = findPiece(7, 7);
+                GridPane.setColumnIndex(piece, 5);
+            } else {
+                collectionManager.movePiece(7, 0, 7, 3);
+                Circle piece = findPiece(7, 0);
+                GridPane.setColumnIndex(piece, 3);
+            }
+        }
+
     }
 
 }
