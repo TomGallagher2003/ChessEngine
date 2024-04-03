@@ -213,14 +213,7 @@ public class MoveUtility {
     }
 
     private boolean putsBlackInCheck(int oldRow, int newRow, int oldCol, int newCol, ArrayList<ArrayList<Double>> map){
-        ArrayList<ArrayList<Double>> ifMap = new ArrayList<>();
-        for(int row = 0; row < 8; row++){
-            ArrayList<Double> line = new ArrayList<>();
-            for(int col = 0; col < 8; col++){
-                line.add(Double.valueOf(map.get(row).get(col)));
-            }
-            ifMap.add(line);
-        }
+        ArrayList<ArrayList<Double>> ifMap = copyMap(map);
         ifMap.get(newRow).set(newCol, ifMap.get(oldRow).get(oldCol));
         ifMap.get(oldRow).set(oldCol, 0.0);
         int kingRow = 404;
@@ -246,5 +239,16 @@ public class MoveUtility {
             }
         }
         return false;
+    }
+    public static ArrayList<ArrayList<Double>> copyMap( ArrayList<ArrayList<Double>> map){
+        ArrayList<ArrayList<Double>> ifMap = new ArrayList<>();
+        for(int row = 0; row < 8; row++){
+            ArrayList<Double> line = new ArrayList<>();
+            for(int col = 0; col < 8; col++){
+                line.add(Double.valueOf(map.get(row).get(col)));
+            }
+            ifMap.add(line);
+        }
+        return ifMap;
     }
 }

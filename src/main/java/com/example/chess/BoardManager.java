@@ -201,7 +201,7 @@ public class BoardManager {
         playerTurn = true;
     }
     public void makeEngineMove(){
-        Move move = engine.getRandomMove(playerWhite, collectionManager.pieceMap);
+        Move move = engine.getBestMove(playerWhite, collectionManager.pieceMap);
         purgeSquare(move.getNewRow(), move.getNewCol());
         collectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol());
         Circle piece = findPiece(move.getOldRow(), move.getOldCol());
