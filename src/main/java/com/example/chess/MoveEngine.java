@@ -8,8 +8,6 @@ public class MoveEngine {
     MoveUtility moveUtil = new MoveUtility();
 
     public Move getRandomMove(boolean white, ArrayList<ArrayList<Double>> map){
-        try{Thread.sleep(1000);} catch(InterruptedException e){System.out.println("Interrupted");}
-
         for(int row= 0; row < 8; row++){
             for(int col = 0; col < 8; col++){
                 if(map.get(row).get(col) < 1 && white || map.get(row).get(col) > 1 && !white )

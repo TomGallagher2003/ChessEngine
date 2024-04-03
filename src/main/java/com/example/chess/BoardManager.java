@@ -41,7 +41,6 @@ public class BoardManager {
                 } else {
                     square.setFill(Color.DARKOLIVEGREEN); // Dark color for black squares
                 }
-                setSquareClickHandlers(square);
             }
         }
 
@@ -100,15 +99,6 @@ public class BoardManager {
                     selectPiece(clickedCircle);
                     return;
                 }
-                //capture case
-                if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
-                    GridPane.setRowIndex(selectedPiece, clickedRow);
-                    GridPane.setColumnIndex(selectedPiece, clickedCol);
-                    collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
-                    clearSelect();
-                    root.getChildren().remove(clickedCircle);
-                    onPlayerMove();
-                }
 
 
             } else {
@@ -117,35 +107,6 @@ public class BoardManager {
             }
         });
 
-    }
-    private void setSquareClickHandlers(Rectangle square) {
-        square.setOnMouseClicked(event -> {
-            if(!playerTurn){
-                return;
-            }
-            // Get the clicked circle
-            Rectangle clickedSquare = (Rectangle) event.getSource();
-
-            // Get the row and column index of the clicked circle
-            int clickedRow = GridPane.getRowIndex(clickedSquare);
-            int clickedCol = GridPane.getColumnIndex(clickedSquare);
-
-
-            // non capture move
-            if (selectedPiece != null) {
-
-                int oldRow = GridPane.getRowIndex(selectedPiece);
-                int oldCol = GridPane.getColumnIndex(selectedPiece);
-                if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
-                    GridPane.setRowIndex(selectedPiece, clickedRow);
-                    GridPane.setColumnIndex(selectedPiece, clickedCol);
-                    collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
-                    clearSelect();
-                    onPlayerMove();
-                }
-                clearSelect();
-            }
-        });
     }
     private void setMarkerClickHandlers(Circle marker) {
         marker.setOnMouseClicked(event -> {
@@ -170,9 +131,10 @@ public class BoardManager {
                     GridPane.setRowIndex(selectedPiece, clickedRow);
                     GridPane.setColumnIndex(selectedPiece, clickedCol);
                     collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
+                    clearSelect();
                     onPlayerMove();
                 }
-                clearSelect();
+
 
             }
         });
