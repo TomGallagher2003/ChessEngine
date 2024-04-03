@@ -1,5 +1,6 @@
 package com.example.chess;
 
+import com.example.chess.type.Move;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -8,8 +9,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class BoardManager {
 
@@ -20,6 +19,7 @@ public class BoardManager {
     ArrayList<Circle> markers = new ArrayList<>();
     boolean playerTurn;
     boolean playerWhite;
+    MoveEngine engine = new MoveEngine();
 
 
     public BoardManager(GridPane pane, boolean white){
@@ -75,6 +75,9 @@ public class BoardManager {
 
     private void setCircleClickHandlers(Circle circle) {
         circle.setOnMouseClicked(event -> {
+            if(!playerTurn){
+                return;
+            }
             // Get the clicked circle
             Circle clickedCircle = (Circle) event.getSource();
             // Get the row and column index of the clicked piece
@@ -87,22 +90,24 @@ public class BoardManager {
                 return;
             }
 
-            // capture case
             if (selectedPiece != null) {
                 // Get the row and column index of the selected piece
                 int oldRow = GridPane.getRowIndex(selectedPiece);
                 int oldCol = GridPane.getColumnIndex(selectedPiece);
+                //select another piece case
                 if(collectionManager.getPieceMap().get(oldRow).get(oldCol) * collectionManager.getPieceMap().get(clickedRow).get(clickedCol) > 0){
                     clearSelect();
                     selectPiece(clickedCircle);
                     return;
                 }
+                //capture case
                 if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
                     GridPane.setRowIndex(selectedPiece, clickedRow);
                     GridPane.setColumnIndex(selectedPiece, clickedCol);
                     collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
                     clearSelect();
                     root.getChildren().remove(clickedCircle);
+                    onPlayerMove();
                 }
 
 
@@ -115,6 +120,9 @@ public class BoardManager {
     }
     private void setSquareClickHandlers(Rectangle square) {
         square.setOnMouseClicked(event -> {
+            if(!playerTurn){
+                return;
+            }
             // Get the clicked circle
             Rectangle clickedSquare = (Rectangle) event.getSource();
 
@@ -125,22 +133,25 @@ public class BoardManager {
 
             // non capture move
             if (selectedPiece != null) {
-                if (true) {
-                    int oldRow = GridPane.getRowIndex(selectedPiece);
-                    int oldCol = GridPane.getColumnIndex(selectedPiece);
-                    if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
-                        GridPane.setRowIndex(selectedPiece, clickedRow);
-                        GridPane.setColumnIndex(selectedPiece, clickedCol);
-                        collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
-                    }
-                    clearSelect();
 
+                int oldRow = GridPane.getRowIndex(selectedPiece);
+                int oldCol = GridPane.getColumnIndex(selectedPiece);
+                if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
+                    GridPane.setRowIndex(selectedPiece, clickedRow);
+                    GridPane.setColumnIndex(selectedPiece, clickedCol);
+                    collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
+                    clearSelect();
+                    onPlayerMove();
                 }
+                clearSelect();
             }
         });
     }
     private void setMarkerClickHandlers(Circle marker) {
         marker.setOnMouseClicked(event -> {
+            if(!playerTurn){
+                return;
+            }
             // Get the clicked circle
             Circle clickedMarker = (Circle) event.getSource();
 
@@ -152,18 +163,17 @@ public class BoardManager {
 
             // If a piece is already selected, move it to the clicked position
             if (selectedPiece != null) {
-                if (true) {
-                    // Get the row and column index of the selected piece
-                    int oldRow = GridPane.getRowIndex(selectedPiece);
-                    int oldCol = GridPane.getColumnIndex(selectedPiece);
-                    if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
-                        GridPane.setRowIndex(selectedPiece, clickedRow);
-                        GridPane.setColumnIndex(selectedPiece, clickedCol);
-                        collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
-                    }
-                    clearSelect();
-
+                // Get the row and column index of the selected piece
+                int oldRow = GridPane.getRowIndex(selectedPiece);
+                int oldCol = GridPane.getColumnIndex(selectedPiece);
+                if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
+                    GridPane.setRowIndex(selectedPiece, clickedRow);
+                    GridPane.setColumnIndex(selectedPiece, clickedCol);
+                    collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
+                    onPlayerMove();
                 }
+                clearSelect();
+
             }
         });
     }
@@ -220,7 +230,34 @@ public class BoardManager {
     }
     public void clearSelect(){
         clearMarkers();
-        selectedPiece.setStroke(Color.TRANSPARENT);
+        if(selectedPiece!= null){selectedPiece.setStroke(Color.TRANSPARENT);}
         selectedPiece = null;
     }
+    public void onPlayerMove(){
+        playerTurn = false;
+        makeEngineMove();
+        playerTurn = true;
+    }
+    public void makeEngineMove(){
+        Move move = engine.getRandomMove(playerWhite, collectionManager.pieceMap);
+        purgeSquare(move.getNewRow(), move.getNewCol());
+        collectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol());
+        Circle piece = findPiece(move.getOldRow(), move.getOldCol());
+        GridPane.setRowIndex(piece, move.getNewRow());
+        GridPane.setColumnIndex(piece, move.getNewCol());
+    }
+
+    public Circle findPiece(int row, int col){
+        for (javafx.scene.Node node : root.getChildren()) {
+            Integer rowIndex = GridPane.getRowIndex(node);
+            Integer colIndex = GridPane.getColumnIndex(node);
+            if (rowIndex != null && colIndex != null && rowIndex == row && colIndex == col) {
+                if (node instanceof Circle) {
+                    return (Circle) node;
+                }
+            }
+        }
+        return null;
+    }
+
 }
