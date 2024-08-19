@@ -5,6 +5,8 @@ import javafx.concurrent.Task;
 
 public class EngineMoveTask extends Task<Void> {
     private final BoardManager boardManager;
+    private final int maxRetries = 2;
+    private int attempt = 0;
 
     public EngineMoveTask(BoardManager boardManager) {
         this.boardManager = boardManager;
@@ -12,7 +14,20 @@ public class EngineMoveTask extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-        boardManager.makeEngineMove(); // Compute engine's move
+        try {
+            boardManager.makeEngineMove();
+        } catch (Exception e) {
+            // retry if exception
+            if (attempt < maxRetries) {
+                attempt++;
+                updateMessage("Retrying (" + attempt + "/" + maxRetries + ")");
+                call();
+            } else {
+                // max retries reached :(
+                updateMessage("Failed after " + maxRetries + " attempts");
+                throw e;
+            }
+        }
         return null;
     }
 
@@ -25,7 +40,7 @@ public class EngineMoveTask extends Task<Void> {
     @Override
     protected void failed() {
         super.failed();
-        boardManager.setPlayerTurn(true); // Allow the player to move again in case of failure
+        boardManager.setPlayerTurn(false); // Allow the player to move again in case of failure
     }
 }
 

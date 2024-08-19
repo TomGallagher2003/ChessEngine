@@ -12,6 +12,7 @@ public class MoveComparator implements Comparator<Move> {
     }
 
     @Override
+    // try moves with good capture value first
     public int compare(Move move1, Move move2) {
         double mvvLva1 = getValueOfCapturedPiece(move1) - getValueOfMovingPiece(move1);
         double mvvLva2 = getValueOfCapturedPiece(move2) - getValueOfMovingPiece(move2);

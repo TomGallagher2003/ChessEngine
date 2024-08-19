@@ -38,8 +38,8 @@ public class MoveUtility {
         else if(piece == 3.3){return isValidMoveBishop(oldRow, newRow, oldCol, newCol, map);}
         else if(piece == -10){return isValidMoveQueen(oldRow, newRow, oldCol, newCol, map);}
         else if(piece == 10){return isValidMoveQueen(oldRow, newRow, oldCol, newCol, map);}
-        else if(piece == -255){return (isValidMoveBlackKing(oldRow, newRow, oldCol, newCol, map) ||isValidMoveBlackKingCastles(oldRow, newRow, oldCol, newCol, map)) ;}
-        else if(piece == 255){return (isValidMoveWhiteKing(oldRow, newRow, oldCol, newCol, map)||isValidMoveWhiteKingCastles(oldRow, newRow, oldCol, newCol, map));
+        else if(piece == -255){return (isValidMoveBlackKing(oldRow, newRow, oldCol, newCol) ||isValidMoveBlackKingCastles(oldRow, newRow, oldCol, newCol, map)) ;}
+        else if(piece == 255){return (isValidMoveWhiteKing(oldRow, newRow, oldCol, newCol)||isValidMoveWhiteKingCastles(oldRow, newRow, oldCol, newCol, map));
         }
         return false;
 
@@ -66,8 +66,8 @@ public class MoveUtility {
         else if(piece == 3.3){return isValidMoveBishop(oldRow, newRow, oldCol, newCol, map);}
         else if(piece == -10){return isValidMoveQueen(oldRow, newRow, oldCol, newCol, map);}
         else if(piece == 10){return isValidMoveQueen(oldRow, newRow, oldCol, newCol, map);}
-        else if(piece == -255){return isValidMoveBlackKing(oldRow, newRow, oldCol, newCol, map);}
-        else if(piece == 255){return isValidMoveWhiteKing(oldRow, newRow, oldCol, newCol, map);
+        else if(piece == -255){return isValidMoveBlackKing(oldRow, newRow, oldCol, newCol);}
+        else if(piece == 255){return isValidMoveWhiteKing(oldRow, newRow, oldCol, newCol);
         }
         return false;
 
@@ -206,7 +206,7 @@ public class MoveUtility {
         }
         return false;
     }
-    public boolean isValidMoveBlackKing(int oldRow, int newRow, int oldCol, int newCol, ArrayList<ArrayList<Double>> map){
+    public boolean isValidMoveBlackKing(int oldRow, int newRow, int oldCol, int newCol){
         int rowDiff = newRow - oldRow;
         int colDiff = newCol - oldCol;
         if(colDiff <= 1 && rowDiff <=1 && rowDiff>=-1 && colDiff >=-1){
@@ -248,7 +248,7 @@ public class MoveUtility {
         }
         return false;
     }
-    public boolean isValidMoveWhiteKing(int oldRow, int newRow, int oldCol, int newCol, ArrayList<ArrayList<Double>> map){
+    public boolean isValidMoveWhiteKing(int oldRow, int newRow, int oldCol, int newCol){
         int rowDiff = newRow - oldRow;
         int colDiff = newCol - oldCol;
         if(colDiff <= 1 && rowDiff <=1 && rowDiff>=-1 && colDiff >=-1){
@@ -279,7 +279,7 @@ public class MoveUtility {
         //get king position
         for(int row = 0; row < 8; row++){
             for(int col = 0; col < 8; col++){
-                if(map.get(row).get(col) == -255){
+                if(ifMap.get(row).get(col) == -255){
                     kingRow = row;
                     kingCol = col;
                     break;
