@@ -1,6 +1,8 @@
 package com.example.chess;
 
+import com.example.chess.type.EngineMoveTask;
 import com.example.chess.type.Move;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -28,7 +30,7 @@ public class BoardManager {
         this.root = pane;
         this.playerTurn = white;
         this.playerWhite = white;
-        this.depth = depth;
+        this.depth = depth * 2 + 1;
 
 
     }
@@ -201,10 +203,16 @@ public class BoardManager {
         if(selectedPiece!= null){selectedPiece.setStroke(Color.TRANSPARENT);}
         selectedPiece = null;
     }
+    public void setPlayerTurn(boolean playerTurn){
+        this.playerTurn = playerTurn;
+    }
     public void onPlayerMove(){
         playerTurn = false;
-        makeEngineMove();
-        playerTurn = true;
+        // so the UI updates before engine move, makes it feel more natural
+        Platform.runLater(() -> {
+            EngineMoveTask task = new EngineMoveTask(this);
+            new Thread(task).start();
+        });
     }
     public void makeEngineMove(){
         Move move = engine.getNiceMove(playerWhite, collectionManager.pieceMap, depth);

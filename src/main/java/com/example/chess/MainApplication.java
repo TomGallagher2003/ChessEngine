@@ -10,7 +10,7 @@ public class MainApplication extends Application {
     public static boolean PLAY_AS_WHITE = true;
     public static boolean PLAY_AS_BLACK = false;
     GridPane root = new GridPane();
-    BoardManager board = new BoardManager(root, PLAY_AS_WHITE, 3);
+    BoardManager board = new BoardManager(root, PLAY_AS_WHITE, 1);
 
     @Override
     public void start(Stage primaryStage) {
