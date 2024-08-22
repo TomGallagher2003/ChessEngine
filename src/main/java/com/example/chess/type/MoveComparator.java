@@ -1,29 +1,37 @@
 package com.example.chess.type;
 
-import java.util.ArrayList;
+import com.example.chess.InfoCollectionManager;
+
 import java.util.Comparator;
 
 public class MoveComparator implements Comparator<Move> {
 
-    private ArrayList<ArrayList<Double>> map;
+    private final InfoCollectionManager collectionManager;
+    private final boolean white;
 
-    public MoveComparator(ArrayList<ArrayList<Double>> map) {
-        this.map = map;
+    public MoveComparator(InfoCollectionManager collectionManager, boolean white) {
+        this.collectionManager = collectionManager;
+        this.white = white;
     }
 
     @Override
-    // try moves with good capture value first
+    // Try moves with good capture value first
     public int compare(Move move1, Move move2) {
-        double mvvLva1 = getValueOfCapturedPiece(move1) - getValueOfMovingPiece(move1);
-        double mvvLva2 = getValueOfCapturedPiece(move2) - getValueOfMovingPiece(move2);
-        return Double.compare(mvvLva2, mvvLva1); // Sort in descending order
+        double mvvLva1 = getValueOfCapturedPiece(move1);
+        double mvvLva2 = getValueOfCapturedPiece(move2);
+
+        if (!white) {
+            return Double.compare(mvvLva1, mvvLva2); // Sort in ascending order for black
+        }
+
+        return Double.compare(mvvLva2, mvvLva1); // Sort in descending order for white
     }
 
     private double getValueOfCapturedPiece(Move move) {
-        return map.get(move.getNewRow()).get(move.getNewCol());
+        return collectionManager.getPieceValue(move.getNewRow(), move.getNewCol());
     }
 
     private double getValueOfMovingPiece(Move move) {
-        return map.get(move.getOldRow()).get(move.getOldCol());
+        return collectionManager.getPieceValue(move.getOldRow(), move.getOldCol());
     }
 }

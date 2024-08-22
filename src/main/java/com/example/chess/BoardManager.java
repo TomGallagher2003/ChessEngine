@@ -13,7 +13,6 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public class BoardManager {
-
     Circle selectedPiece = null;
     GridPane root;
     InfoCollectionManager collectionManager = new InfoCollectionManager();
@@ -25,17 +24,16 @@ public class BoardManager {
     int moveCount = 0;
     int depth;
 
-
-    public BoardManager(GridPane pane, boolean white, int depth){
+    public BoardManager(GridPane pane, boolean white, int depth) {
         this.root = pane;
         this.playerTurn = white;
         this.playerWhite = white;
-        this.depth = depth * 2 + 1;
-
-
+        this.depth = depth * 2 ;
     }
-    public void setBoard(){
+
+    public void setBoard() {
         root.setGridLinesVisible(true);
+
         // Add squares representing chessboard
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -49,10 +47,11 @@ public class BoardManager {
             }
         }
 
-        for (int col = 0; col < 8; col++) {
-            for (int row = 0; row < 8; row++) {
-                Double pieceVal = collectionManager.getPieceValue(row, col);
-                if(pieceVal != 0.0){
+        // Add pieces to the board with white pieces at the bottom
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                double pieceVal = collectionManager.getPieceValue(row, col);
+                if (pieceVal != 0.0) {
                     Circle piece = createPiece();
                     root.add(piece, col, row);
                     setCircleClickHandlers(piece);
@@ -60,8 +59,8 @@ public class BoardManager {
                 }
             }
         }
-
     }
+
     private Rectangle createSquare() {
         Rectangle square = new Rectangle(80, 80);
         square.setStroke(Color.BLACK); // Add border color
@@ -73,91 +72,82 @@ public class BoardManager {
         piece.setRadius(37);
         piece.setStrokeWidth(3);
         piece.setStroke(Color.TRANSPARENT);
-
         return piece;
     }
 
     private void setCircleClickHandlers(Circle circle) {
         circle.setOnMouseClicked(event -> {
-            if(!playerTurn){
-                return;
+            if (!playerTurn) {
+                return; // Skip if it's not the player's turn
             }
-            // Get the clicked circle
             Circle clickedCircle = (Circle) event.getSource();
-            // Get the row and column index of the clicked piece
             int clickedRow = GridPane.getRowIndex(clickedCircle);
             int clickedCol = GridPane.getColumnIndex(clickedCircle);
 
-            //deselect on second click
-            if(clickedCircle == selectedPiece){
+            // Check if the clicked piece is a white piece
+            double pieceValue = collectionManager.getPieceValue(clickedRow, clickedCol);
+            if (pieceValue <= 0) { // Skip if it's a black piece or an empty square
+                return;
+            }
+
+            if (clickedCircle == selectedPiece) {
                 clearSelect();
                 return;
             }
 
             if (selectedPiece != null) {
-                // Get the row and column index of the selected piece
                 int oldRow = GridPane.getRowIndex(selectedPiece);
                 int oldCol = GridPane.getColumnIndex(selectedPiece);
-                //select another piece case
-                if(collectionManager.getPieceMap().get(oldRow).get(oldCol) * collectionManager.getPieceMap().get(clickedRow).get(clickedCol) > 0){
+
+                if (collectionManager.getPieceValue(oldRow, oldCol) > 0 && collectionManager.getPieceValue(clickedRow, clickedCol) > 0) {
                     clearSelect();
                     selectPiece(clickedCircle);
                     return;
                 }
 
-
             } else {
-                // Select the clicked piece
-               selectPiece(clickedCircle);
+                selectPiece(clickedCircle);
             }
         });
-
     }
+
     private void setMarkerClickHandlers(Circle marker) {
         marker.setOnMouseClicked(event -> {
-            if(!playerTurn){
-                return;
+            if (!playerTurn) {
+                return; // Skip if it's not the player's turn
             }
-            // Get the clicked circle
             Circle clickedMarker = (Circle) event.getSource();
-
-            // Get the row and column index of the clicked circle
             int clickedRow = GridPane.getRowIndex(clickedMarker);
             int clickedCol = GridPane.getColumnIndex(clickedMarker);
             clearMarkers();
             purgeSquare(clickedRow, clickedCol);
 
-            // If a piece is already selected, move it to the clicked position
             if (selectedPiece != null) {
-                // Get the row and column index of the selected piece
                 int oldRow = GridPane.getRowIndex(selectedPiece);
                 int oldCol = GridPane.getColumnIndex(selectedPiece);
-                if(moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager.getPieceMap())){
+                double pieceVal = collectionManager.getPieceValue(oldRow, oldCol);
+
+                if (pieceVal > 0 && moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager)) {
                     GridPane.setRowIndex(selectedPiece, clickedRow);
                     GridPane.setColumnIndex(selectedPiece, clickedCol);
-                    collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol);
+                    collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol, pieceVal);
                     clearSelect();
-                    if(moveUtil.isJustCastled()){
+                    if (moveUtil.isJustCastled()) {
                         castle(clickedRow, clickedCol);
                     }
                     onPlayerMove();
                 }
-
-
             }
         });
     }
+
     private void addPieceIcon(Circle circle, String iconPath) {
-        // Load the icon image
         Image iconImage = new Image(iconPath);
-
-        // Create an ImagePattern using the icon image
         ImagePattern imagePattern = new ImagePattern(iconImage);
-
-        // Set the fill of the circle to the ImagePattern
         circle.setFill(imagePattern);
     }
-    private void addMarker(int row, int col){
+
+    private void addMarker(int row, int col) {
         Circle marker = new Circle(40, Color.TRANSPARENT);
         marker.setRadius(40);
         addPieceIcon(marker, "images/marker.png");
@@ -165,66 +155,89 @@ public class BoardManager {
         markers.add(marker);
         root.add(marker, col, row);
     }
-    public void clearMarkers(){
-        for(Circle marker: markers){
+
+    public void clearMarkers() {
+        for (Circle marker : markers) {
             root.getChildren().remove(marker);
         }
         markers.clear();
     }
-    public void purgeSquare(int row, int col){
+
+    public void purgeSquare(int row, int col) {
         for (javafx.scene.Node node : root.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
             if (rowIndex != null && colIndex != null && rowIndex == row && colIndex == col) {
-
                 if (node instanceof Circle) {
-                    root.getChildren().remove(node);
-                    break; // Found the circle, exit the loop
+                    Platform.runLater(() -> {
+                        root.getChildren().remove(node);
+                    });
+                    break;
                 }
             }
         }
     }
-    public void selectPiece(Circle piece){
+
+    public void selectPiece(Circle piece) {
         int row = GridPane.getRowIndex(piece);
         int col = GridPane.getColumnIndex(piece);
         selectedPiece = piece;
         selectedPiece.setStroke(Color.PURPLE);
-        ArrayList<ArrayList<Boolean>> legalMoves = moveUtil.getLegalMoves(row, col, collectionManager.getPieceMap());
-        for(int rowA = 0; rowA < 8; rowA++){
-            for(int colA = 0; colA < 8; colA++){
-                if(legalMoves.get(rowA).get(colA)){
+        ArrayList<ArrayList<Boolean>> legalMoves = moveUtil.getLegalMoves(row, col, collectionManager);
+        for (int rowA = 0; rowA < 8; rowA++) {
+            for (int colA = 0; colA < 8; colA++) {
+                if (legalMoves.get(rowA).get(colA)) {
                     addMarker(rowA, colA);
                 }
             }
         }
     }
-    public void clearSelect(){
+
+    public void clearSelect() {
         clearMarkers();
-        if(selectedPiece!= null){selectedPiece.setStroke(Color.TRANSPARENT);}
+        if (selectedPiece != null) {
+            selectedPiece.setStroke(Color.TRANSPARENT);
+        }
         selectedPiece = null;
     }
-    public void setPlayerTurn(boolean playerTurn){
+
+    public void setPlayerTurn(boolean playerTurn) {
         this.playerTurn = playerTurn;
     }
-    public void onPlayerMove(){
+
+    public void onPlayerMove() {
         playerTurn = false;
-        // so the UI updates before engine move, makes it feel more natural
         Platform.runLater(() -> {
             EngineMoveTask task = new EngineMoveTask(this);
             new Thread(task).start();
         });
     }
-    public void makeEngineMove(){
-        Move move = engine.getNiceMove(playerWhite, collectionManager.pieceMap, depth);
-        purgeSquare(move.getNewRow(), move.getNewCol());
-        collectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol());
-        Circle piece = findPiece(move.getOldRow(), move.getOldCol());
-        GridPane.setRowIndex(piece, move.getNewRow());
-        GridPane.setColumnIndex(piece, move.getNewCol());
-        moveCount +=1;
+
+    public void makeEngineMove() {
+        try {
+            Move move = engine.getNiceMove(playerWhite, collectionManager, depth);
+            System.out.println("Engine generated move: (" + move.getOldRow() + ", " + move.getOldCol() + ") --> (" + move.getNewRow() + ", " + move.getNewCol() + ")" );
+
+            if (move == null) {
+                System.out.println("ERROR: No move generated by the engine.");
+                return;
+            }
+
+            purgeSquare(move.getNewRow(), move.getNewCol());
+            double pieceVal = collectionManager.getPieceValue(move.getOldRow(), move.getOldCol());
+            collectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol(), pieceVal);
+            Circle piece = findPiece(move.getOldRow(), move.getOldCol());
+            GridPane.setRowIndex(piece, move.getNewRow());
+            GridPane.setColumnIndex(piece, move.getNewCol());
+            moveCount++;
+        } catch (Exception e) {
+            System.out.println("Exception in makeEngineMove: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    public Circle findPiece(int row, int col){
+
+    public Circle findPiece(int row, int col) {
         for (javafx.scene.Node node : root.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
@@ -236,29 +249,28 @@ public class BoardManager {
         }
         return null;
     }
+
     public void castle(int row, int col) {
         if (row == 0) {
             if (col == 6) {
-                collectionManager.movePiece(0, 7, 0, 5);
+                collectionManager.movePiece(0, 7, 0, 5, InfoCollectionManager.BLACK_ROOK);
                 Circle piece = findPiece(0, 7);
                 GridPane.setColumnIndex(piece, 5);
             } else {
-                collectionManager.movePiece(0, 0, 0, 3);
+                collectionManager.movePiece(0, 0, 0, 3, InfoCollectionManager.BLACK_ROOK);
                 Circle piece = findPiece(0, 0);
                 GridPane.setColumnIndex(piece, 3);
             }
         } else {
             if (col == 6) {
-                collectionManager.movePiece(7, 7, 7, 5);
+                collectionManager.movePiece(7, 7, 7, 5, InfoCollectionManager.WHITE_ROOK);
                 Circle piece = findPiece(7, 7);
                 GridPane.setColumnIndex(piece, 5);
             } else {
-                collectionManager.movePiece(7, 0, 7, 3);
+                collectionManager.movePiece(7, 0, 7, 3, InfoCollectionManager.WHITE_ROOK);
                 Circle piece = findPiece(7, 0);
                 GridPane.setColumnIndex(piece, 3);
             }
         }
-
     }
-
 }

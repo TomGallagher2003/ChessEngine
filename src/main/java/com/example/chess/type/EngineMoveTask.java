@@ -17,16 +17,7 @@ public class EngineMoveTask extends Task<Void> {
         try {
             boardManager.makeEngineMove();
         } catch (Exception e) {
-            // retry if exception
-            if (attempt < maxRetries) {
-                attempt++;
-                updateMessage("Retrying (" + attempt + "/" + maxRetries + ")");
-                call();
-            } else {
-                // max retries reached :(
-                updateMessage("Failed after " + maxRetries + " attempts");
-                throw e;
-            }
+            e.printStackTrace();
         }
         return null;
     }
@@ -40,7 +31,7 @@ public class EngineMoveTask extends Task<Void> {
     @Override
     protected void failed() {
         super.failed();
-        boardManager.setPlayerTurn(false); // Allow the player to move again in case of failure
+        boardManager.setPlayerTurn(true); // Allow the player to move again in case of failure
     }
 }
 
