@@ -4,6 +4,7 @@ plugins {
   id 'org.javamodularity.moduleplugin' version '1.8.12'
   id 'org.openjfx.javafxplugin' version '0.0.13'
   id 'org.beryx.jlink' version '2.25.0'
+  id 'com.github.johnrengelman.shadow' version '8.1.1' // Add Shadow plugin for fat JAR
 }
 
 group 'com.example'
@@ -26,22 +27,24 @@ tasks.withType(JavaCompile) {
 
 application {
   mainModule = 'com.example.chess'
-  mainClass = 'com.example.chess.HelloApplication'
+  mainClass = 'com.example.chess.MainApplication' // Update the main class name
 }
 
 javafx {
   version = '17.0.6'
-  modules = ['javafx.controls', 'javafx.fxml']
+  modules = ['javafx.controls']
 }
 
 dependencies {
+  implementation 'org.openjfx:javafx-controls:17.0.6'
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
 test {
-  useJUnitPlatform()  }
+  useJUnitPlatform()
+}
 
 jlink {
   imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
@@ -53,4 +56,23 @@ jlink {
 
 jlinkZip {
   group = 'distribution'
+}
+
+// Configure the shadowJar task to create a fat JAR
+shadowJar {
+  archiveBaseName.set('chess-app')
+  archiveClassifier.set('')
+  archiveVersion.set('')
+  mergeServiceFiles()
+  manifest {
+    attributes 'Main-Class': application.mainClass.get()
+  }
+}
+
+// Ensure shadowJar task runs when you build
+build.dependsOn shadowJar
+
+// If you want to override the default jar task to create the fat JAR as the default artifact
+jar {
+  enabled = false
 }

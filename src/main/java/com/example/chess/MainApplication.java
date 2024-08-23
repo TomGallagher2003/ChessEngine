@@ -10,7 +10,7 @@ public class MainApplication extends Application {
     public static boolean WHITE = true;
     public static boolean BLACK = false; // Doesn't work yet
     GridPane root = new GridPane();
-    BoardManager board = new BoardManager(root, WHITE, 2);
+    BoardManager board = new BoardManager(root, WHITE, 5);
 
     @Override
     public void start(Stage primaryStage) {

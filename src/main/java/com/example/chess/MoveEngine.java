@@ -9,29 +9,6 @@ import java.util.stream.Collectors;
 public class MoveEngine {
     private final MoveUtility moveUtil = new MoveUtility();
 
-    public Move getBestMove(boolean playerWhite, InfoCollectionManager collectionManager) {
-        Move bestMove = null;
-        double bestEval = playerWhite ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-
-        List<Move> legalMoves = moveUtil.generateLegalMoves(playerWhite, collectionManager);
-
-        // Filter the moves to ensure that the final selected move is for black pieces
-        List<Move> blackMoves = legalMoves.stream()
-                .filter(move -> collectionManager.getPieceValue(move.getOldRow(), move.getOldCol()) < 0)
-                .collect(Collectors.toList());
-
-        for (Move move : blackMoves) {
-            InfoCollectionManager newCollectionManager = simulateMove(move, collectionManager);
-            double eval = evaluateBoard(newCollectionManager);
-
-            if ((playerWhite && eval > bestEval) || (!playerWhite && eval < bestEval)) {
-                bestMove = move;
-                bestEval = eval;
-            }
-        }
-
-        return bestMove;
-    }
 
     private InfoCollectionManager simulateMove(Move move, InfoCollectionManager collectionManager) {
         InfoCollectionManager newCollectionManager = new InfoCollectionManager(collectionManager);
@@ -57,7 +34,7 @@ public class MoveEngine {
             return eval;
         }
 
-        List<Move> legalMoves = moveUtil.generateLegalMoves(maximizingPlayer, collectionManager);
+        List<Move> legalMoves = moveUtil.generateLegalMoves(maximizingPlayer, collectionManager, false);
 
         if (maximizingPlayer) {
             double maxEval = Double.NEGATIVE_INFINITY;
@@ -91,12 +68,12 @@ public class MoveEngine {
 
     public Move getNiceMove(boolean playerWhite, InfoCollectionManager collectionManager, int depth) {
         Move bestMove = null;
-        double bestScore = Double.NEGATIVE_INFINITY;
+        double bestScore = Double.POSITIVE_INFINITY; // Start with the highest possible score since we want to minimize
         double alpha = Double.NEGATIVE_INFINITY;
         double beta = Double.POSITIVE_INFINITY;
 
         // Generate legal moves for the black player (as this is the function call for the engine to move black pieces)
-        List<Move> blackMoves = moveUtil.generateLegalMoves(false, collectionManager);
+        List<Move> blackMoves = moveUtil.generateLegalMoves(false, collectionManager, true);
 
         for (Move move : blackMoves) {
             InfoCollectionManager newCollectionManager = simulateMove(move, collectionManager);
@@ -104,11 +81,11 @@ public class MoveEngine {
             // Minimax expects the opponent's turn, so we switch to the other player
             double score = minimax(newCollectionManager, depth, alpha, beta, true);
 
-            if (score > bestScore) {
+            if (score < bestScore) { // Change this to find the minimum score
                 bestScore = score;
                 bestMove = move;
             }
-            alpha = Math.max(alpha, bestScore);
+            beta = Math.min(beta, bestScore); // Update beta instead of alpha for minimizing
 
             if (beta <= alpha) {
                 break; // Alpha-Beta cut-off
@@ -117,5 +94,6 @@ public class MoveEngine {
 
         return bestMove;
     }
+
 
 }

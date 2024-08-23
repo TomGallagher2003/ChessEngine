@@ -7,8 +7,6 @@ public class InfoCollectionManager {
     private long whitePawns, whiteKnights, whiteBishops, whiteRooks, whiteQueens, whiteKing;
     private long blackPawns, blackKnights, blackBishops, blackRooks, blackQueens, blackKing;
 
-    // Image dictionary for piece icons
-    private HashMap<Double, String> imageDict = new HashMap<>();
 
     // Constants representing piece types
     static final double BLACK_ROOK = -5.3;
@@ -25,7 +23,6 @@ public class InfoCollectionManager {
     static final double WHITE_PAWN = 1;
 
     public InfoCollectionManager() {
-        setImageDict();
         setPieceMap();
     }
     public InfoCollectionManager(InfoCollectionManager other) {
@@ -41,26 +38,8 @@ public class InfoCollectionManager {
         this.blackBishops = other.blackBishops;
         this.blackQueens = other.blackQueens;
         this.blackKing = other.blackKing;
-        this.imageDict = new HashMap<>(other.imageDict); // Deep copy the image dictionary if necessary
     }
 
-
-    // Initialize the image dictionary
-    private void setImageDict() {
-        imageDict.put(BLACK_ROOK, "images/blackRook.png");
-        imageDict.put(BLACK_KNIGHT, "images/blackKnight.png");
-        imageDict.put(BLACK_BISHOP, "images/blackBishop.png");
-        imageDict.put(BLACK_QUEEN, "images/BlackQueen.png");
-        imageDict.put(BLACK_KING, "images/BlackKing.png");
-        imageDict.put(BLACK_PAWN, "images/blackPawn.png");
-
-        imageDict.put(WHITE_ROOK, "images/whiteRook.png");
-        imageDict.put(WHITE_KNIGHT, "images/whiteKnight.png");
-        imageDict.put(WHITE_BISHOP, "images/whiteBishop.png");
-        imageDict.put(WHITE_QUEEN, "images/whiteQueen.png");
-        imageDict.put(WHITE_KING, "images/whiteKing.png");
-        imageDict.put(WHITE_PAWN, "images/whitePawn.png");
-    }
 
     // Initialize the bitboards for the starting position
     private void setPieceMap() {
@@ -86,6 +65,37 @@ public class InfoCollectionManager {
 
         long moveMask = (1L << oldPos) | (1L << newPos);
 
+        // First, handle the capture by clearing the captured piece from the bitboards
+        double capturedPiece = getPieceValue(newRow, newCol);
+        if (capturedPiece != 0.0) {
+            if (capturedPiece == WHITE_PAWN) {
+                whitePawns &= ~(1L << newPos);
+            } else if (capturedPiece == BLACK_PAWN) {
+                blackPawns &= ~(1L << newPos);
+            } else if (capturedPiece == WHITE_ROOK) {
+                whiteRooks &= ~(1L << newPos);
+            } else if (capturedPiece == BLACK_ROOK) {
+                blackRooks &= ~(1L << newPos);
+            } else if (capturedPiece == WHITE_KNIGHT) {
+                whiteKnights &= ~(1L << newPos);
+            } else if (capturedPiece == BLACK_KNIGHT) {
+                blackKnights &= ~(1L << newPos);
+            } else if (capturedPiece == WHITE_BISHOP) {
+                whiteBishops &= ~(1L << newPos);
+            } else if (capturedPiece == BLACK_BISHOP) {
+                blackBishops &= ~(1L << newPos);
+            } else if (capturedPiece == WHITE_QUEEN) {
+                whiteQueens &= ~(1L << newPos);
+            } else if (capturedPiece == BLACK_QUEEN) {
+                blackQueens &= ~(1L << newPos);
+            } else if (capturedPiece == WHITE_KING) {
+                whiteKing &= ~(1L << newPos);
+            } else if (capturedPiece == BLACK_KING) {
+                blackKing &= ~(1L << newPos);
+            }
+        }
+
+        // Then, move the piece to the new position
         if (pieceType == WHITE_PAWN) {
             whitePawns = (whitePawns & ~(1L << oldPos)) | (1L << newPos);
         } else if (pieceType == BLACK_PAWN) {
@@ -113,6 +123,7 @@ public class InfoCollectionManager {
         }
     }
 
+
     // Get the value of the piece at a given position
     public double getPieceValue(int row, int col) {
         int pos = row * 8 + col;
@@ -131,8 +142,4 @@ public class InfoCollectionManager {
         return 0.0;
     }
 
-    // Get the image path for a piece based on its value
-    public String getImage(double piece) {
-        return imageDict.get(piece);
-    }
 }

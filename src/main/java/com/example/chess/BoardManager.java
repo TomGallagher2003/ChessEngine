@@ -11,8 +11,23 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BoardManager {
+    // Constants representing piece types
+    static final double BLACK_ROOK = -5.3;
+    static final double BLACK_KNIGHT = -3;
+    static final double BLACK_BISHOP = -3.3;
+    static final double BLACK_QUEEN = -10;
+    static final double BLACK_KING = -255;
+    static final double BLACK_PAWN = -1;
+    static final double WHITE_ROOK = 5.3;
+    static final double WHITE_KNIGHT = 3;
+    static final double WHITE_BISHOP = 3.3;
+    static final double WHITE_QUEEN = 10;
+    static final double WHITE_KING = 255;
+    static final double WHITE_PAWN = 1;
+    private HashMap<Double, String> imageDict = new HashMap<>();
     Circle selectedPiece = null;
     GridPane root;
     InfoCollectionManager collectionManager = new InfoCollectionManager();
@@ -28,10 +43,11 @@ public class BoardManager {
         this.root = pane;
         this.playerTurn = white;
         this.playerWhite = white;
-        this.depth = depth * 2 ;
+        this.depth = depth  ;
     }
 
     public void setBoard() {
+        setImageDict();
         root.setGridLinesVisible(true);
 
         // Add squares representing chessboard
@@ -55,7 +71,7 @@ public class BoardManager {
                     Circle piece = createPiece();
                     root.add(piece, col, row);
                     setCircleClickHandlers(piece);
-                    addPieceIcon(piece, collectionManager.getImage(pieceVal));
+                    addPieceIcon(piece, imageDict.get(pieceVal));
                 }
             }
         }
@@ -272,5 +288,20 @@ public class BoardManager {
                 GridPane.setColumnIndex(piece, 3);
             }
         }
+    }
+    private void setImageDict() {
+        imageDict.put(BLACK_ROOK, "images/blackRook.png");
+        imageDict.put(BLACK_KNIGHT, "images/blackKnight.png");
+        imageDict.put(BLACK_BISHOP, "images/blackBishop.png");
+        imageDict.put(BLACK_QUEEN, "images/BlackQueen.png");
+        imageDict.put(BLACK_KING, "images/BlackKing.png");
+        imageDict.put(BLACK_PAWN, "images/blackPawn.png");
+
+        imageDict.put(WHITE_ROOK, "images/whiteRook.png");
+        imageDict.put(WHITE_KNIGHT, "images/whiteKnight.png");
+        imageDict.put(WHITE_BISHOP, "images/whiteBishop.png");
+        imageDict.put(WHITE_QUEEN, "images/whiteQueen.png");
+        imageDict.put(WHITE_KING, "images/whiteKing.png");
+        imageDict.put(WHITE_PAWN, "images/whitePawn.png");
     }
 }
