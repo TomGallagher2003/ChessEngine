@@ -1,7 +1,7 @@
 package com.example.chess;
 
 import com.example.chess.Validation.Checks;
-import com.example.chess.Type.Move;
+import com.example.chess.model.Move;
 
 import java.util.List;
 
@@ -12,7 +12,6 @@ public class MoveEngine {
 
     private Position simulateMove(Move move, Position collectionManager) {
         Position newCollectionManager = new Position(collectionManager);
-        // Perform the move in the new collection manager
         newCollectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol(), collectionManager.getPieceValue(move.getOldRow(), move.getOldCol()));
         return newCollectionManager;
     }
@@ -34,7 +33,7 @@ public class MoveEngine {
             return eval;
         }
 
-        List<Move> legalMoves = generateLegalMovesEngine(maximizingPlayer, collectionManager, false);
+        List<Move> legalMoves = generateLegalMovesEngine(maximizingPlayer, collectionManager, true);
 
         if (maximizingPlayer) {
             double maxEval = Double.NEGATIVE_INFINITY;

@@ -1,7 +1,7 @@
 package com.example.chess.Utility;
 
 import com.example.chess.Position;
-import com.example.chess.Type.Move;
+import com.example.chess.model.Move;
 
 import java.util.Comparator;
 
@@ -21,11 +21,11 @@ public class MoveComparator implements Comparator<Move> {
         double mvvLva1 = getValueOfCapturedPiece(move1);
         double mvvLva2 = getValueOfCapturedPiece(move2);
 
-        if (!white) {
-            return Double.compare(mvvLva1, mvvLva2); // Sort in ascending order for black
+        if (white) {
+            return Double.compare(mvvLva1, mvvLva2);
         }
 
-        return Double.compare(mvvLva2, mvvLva1); // Sort in descending order for white
+        return Double.compare(mvvLva2, mvvLva1);
     }
 
     private double getValueOfCapturedPiece(Move move) {

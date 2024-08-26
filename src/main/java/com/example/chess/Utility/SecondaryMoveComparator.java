@@ -1,31 +1,29 @@
 package com.example.chess.Utility;
 
 import com.example.chess.Position;
-import com.example.chess.Type.Move;
+import com.example.chess.model.Move;
 
 import java.util.Comparator;
 
 public class SecondaryMoveComparator implements Comparator<Move> {
 
     private final Position collectionManager;
-    private final boolean white;
 
-    public SecondaryMoveComparator(Position collectionManager, boolean white) {
+    public SecondaryMoveComparator(Position collectionManager) {
         this.collectionManager = collectionManager;
-        this.white = white;
     }
 
     @Override
-    // Try moves with high value pieces first, I think this make sense maybe?
+    // Try moves with good capture value first
     public int compare(Move move1, Move move2) {
-        double mvvLva1 = getValueOfMovingPiece(move1);
-        double mvvLva2 = getValueOfMovingPiece(move2);
+        double mvvLva1 = Math.abs(getValueOfCapturedPiece(move1)) - Math.abs(getValueOfMovingPiece(move2));
+        double mvvLva2 = Math.abs(getValueOfCapturedPiece(move2)) - Math.abs(getValueOfMovingPiece(move1));
 
-        if (!white) {
-            return Double.compare(mvvLva1, mvvLva2); // Sort in ascending order for black
-        }
+        return Double.compare(mvvLva2, mvvLva1);
+    }
 
-        return Double.compare(mvvLva2, mvvLva1); // Sort in descending order for white
+    private double getValueOfCapturedPiece(Move move) {
+        return collectionManager.getPieceValue(move.getNewRow(), move.getNewCol());
     }
 
     private double getValueOfMovingPiece(Move move) {

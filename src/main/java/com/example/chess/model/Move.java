@@ -1,4 +1,4 @@
-package com.example.chess.Type;
+package com.example.chess.model;
 
 public class Move {
 

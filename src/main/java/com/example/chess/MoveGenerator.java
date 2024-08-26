@@ -1,12 +1,13 @@
 package com.example.chess;
 
-import com.example.chess.Type.Move;
+import com.example.chess.model.Move;
 import com.example.chess.Utility.MoveComparator;
 import com.example.chess.Utility.SecondaryMoveComparator;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.chess.Validation.Checks.putsWhiteInCheck;
 import static com.example.chess.Validation.MainValidation.isValidMove;
 
 public class MoveGenerator {
@@ -36,7 +37,7 @@ public class MoveGenerator {
         }
         if(withSort){
             legalMoves.sort(new MoveComparator(collectionManager, white)
-                    .thenComparing(new SecondaryMoveComparator(collectionManager, white)));
+                    .thenComparing(new SecondaryMoveComparator(collectionManager)));
 
         }
         return legalMoves;
@@ -47,7 +48,7 @@ public class MoveGenerator {
         for (int row = 0; row < 8; row++) {
             ArrayList<Boolean> temp = new ArrayList<>();
             for (int col = 0; col < 8; col++) {
-                temp.add(isValidMove(oldRow, oldCol, row, col, collectionManager));
+                temp.add(isValidMove(oldRow, oldCol, row, col, collectionManager) && !putsWhiteInCheck(oldRow, oldCol, row, col, collectionManager));
             }
             resultMap.add(temp);
         }

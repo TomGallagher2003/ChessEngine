@@ -1,7 +1,7 @@
 package com.example.chess;
 
 import com.example.chess.Utility.EngineMoveTask;
-import com.example.chess.Type.Move;
+import com.example.chess.model.Move;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
@@ -18,7 +18,6 @@ import static com.example.chess.Validation.MainValidation.isValidMove;
 import static com.example.chess.Constants.*;
 
 public class BoardManager {
-    private HashMap<Double, String> imageDict = new HashMap<>();
     Circle selectedPiece = null;
     GridPane root;
     Position collectionManager = new Position();
@@ -37,7 +36,6 @@ public class BoardManager {
     }
 
     public void setBoard() {
-        setImageDict();
         root.setGridLinesVisible(true);
 
         // Add squares representing chessboard
@@ -61,7 +59,7 @@ public class BoardManager {
                     Circle piece = createPiece();
                     root.add(piece, col, row);
                     setCircleClickHandlers(piece);
-                    addPieceIcon(piece, imageDict.get(pieceVal));
+                    addPieceIcon(piece, IMAGE_DICT.get(pieceVal));
                 }
             }
         }
@@ -84,15 +82,14 @@ public class BoardManager {
     private void setCircleClickHandlers(Circle circle) {
         circle.setOnMouseClicked(event -> {
             if (!playerTurn) {
-                return; // Skip if it's not the player's turn
+                return;
             }
             Circle clickedCircle = (Circle) event.getSource();
             int clickedRow = GridPane.getRowIndex(clickedCircle);
             int clickedCol = GridPane.getColumnIndex(clickedCircle);
 
-            // Check if the clicked piece is a white piece
             double pieceValue = collectionManager.getPieceValue(clickedRow, clickedCol);
-            if (pieceValue <= 0) { // Skip if it's a black piece or an empty square
+            if (pieceValue <= 0) {
                 return;
             }
 
@@ -108,7 +105,6 @@ public class BoardManager {
                 if (collectionManager.getPieceValue(oldRow, oldCol) > 0 && collectionManager.getPieceValue(clickedRow, clickedCol) > 0) {
                     clearSelect();
                     selectPiece(clickedCircle);
-                    return;
                 }
 
             } else {
@@ -120,7 +116,7 @@ public class BoardManager {
     private void setMarkerClickHandlers(Circle marker) {
         marker.setOnMouseClicked(event -> {
             if (!playerTurn) {
-                return; // Skip if it's not the player's turn
+                return;
             }
             Circle clickedMarker = (Circle) event.getSource();
             int clickedRow = GridPane.getRowIndex(clickedMarker);
@@ -153,7 +149,7 @@ public class BoardManager {
     private void addMarker(int row, int col) {
         Circle marker = new Circle(40, Color.TRANSPARENT);
         marker.setRadius(40);
-        addPieceIcon(marker, "images/marker.png");
+        addPieceIcon(marker, IMAGE_DICT.get(MARKER));
         setMarkerClickHandlers(marker);
         markers.add(marker);
         root.add(marker, col, row);
@@ -276,19 +272,5 @@ public class BoardManager {
             }
         }
     }
-    private void setImageDict() {
-        imageDict.put(BLACK_ROOK, "images/blackRook.png");
-        imageDict.put(BLACK_KNIGHT, "images/blackKnight.png");
-        imageDict.put(BLACK_BISHOP, "images/blackBishop.png");
-        imageDict.put(BLACK_QUEEN, "images/BlackQueen.png");
-        imageDict.put(BLACK_KING, "images/BlackKing.png");
-        imageDict.put(BLACK_PAWN, "images/blackPawn.png");
 
-        imageDict.put(WHITE_ROOK, "images/whiteRook.png");
-        imageDict.put(WHITE_KNIGHT, "images/whiteKnight.png");
-        imageDict.put(WHITE_BISHOP, "images/whiteBishop.png");
-        imageDict.put(WHITE_QUEEN, "images/whiteQueen.png");
-        imageDict.put(WHITE_KING, "images/whiteKing.png");
-        imageDict.put(WHITE_PAWN, "images/whitePawn.png");
-    }
 }

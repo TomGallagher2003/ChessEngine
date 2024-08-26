@@ -3,8 +3,6 @@ package com.example.chess.Validation;
 import com.example.chess.Position;
 import static com.example.chess.Constants.*;
 
-import static com.example.chess.Validation.Checks.putsBlackInCheck;
-import static com.example.chess.Validation.Checks.putsWhiteInCheck;
 import static com.example.chess.Validation.King.isValidMoveBlackKing;
 import static com.example.chess.Validation.King.isValidMoveWhiteKing;
 import static com.example.chess.Validation.Knight.isValidMoveKnight;
