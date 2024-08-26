@@ -1,8 +1,8 @@
 package com.example.chess;
 
-import com.example.chess.type.Move;
-import com.example.chess.type.MoveComparator;
-import com.example.chess.type.SecondaryMoveComparator;
+import com.example.chess.Type.Move;
+import com.example.chess.Utility.MoveComparator;
+import com.example.chess.Utility.SecondaryMoveComparator;
 
 import java.util.ArrayList;
 import java.util.List;

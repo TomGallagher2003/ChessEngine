@@ -1,8 +1,7 @@
 package com.example.chess;
 
-import com.example.chess.Validation.MainValidation;
-import com.example.chess.type.EngineMoveTask;
-import com.example.chess.type.Move;
+import com.example.chess.Utility.EngineMoveTask;
+import com.example.chess.Type.Move;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;

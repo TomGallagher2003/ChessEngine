@@ -1,4 +1,4 @@
-package com.example.chess.type;
+package com.example.chess.Utility;
 
 import com.example.chess.BoardManager;
 import javafx.concurrent.Task;

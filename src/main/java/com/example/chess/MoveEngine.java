@@ -1,7 +1,7 @@
 package com.example.chess;
 
 import com.example.chess.Validation.Checks;
-import com.example.chess.type.Move;
+import com.example.chess.Type.Move;
 
 import java.util.List;
 

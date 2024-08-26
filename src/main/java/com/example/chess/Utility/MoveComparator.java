@@ -1,6 +1,7 @@
-package com.example.chess.type;
+package com.example.chess.Utility;
 
 import com.example.chess.Position;
+import com.example.chess.Type.Move;
 
 import java.util.Comparator;
 
