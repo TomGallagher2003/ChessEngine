@@ -1,15 +1,15 @@
 package com.example.chess.type;
 
-import com.example.chess.InfoCollectionManager;
+import com.example.chess.Position;
 
 import java.util.Comparator;
 
 public class SecondaryMoveComparator implements Comparator<Move> {
 
-    private final InfoCollectionManager collectionManager;
+    private final Position collectionManager;
     private final boolean white;
 
-    public SecondaryMoveComparator(InfoCollectionManager collectionManager, boolean white) {
+    public SecondaryMoveComparator(Position collectionManager, boolean white) {
         this.collectionManager = collectionManager;
         this.white = white;
     }

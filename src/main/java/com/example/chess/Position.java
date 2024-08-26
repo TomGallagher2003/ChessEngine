@@ -1,31 +1,16 @@
 package com.example.chess;
 
-import java.util.HashMap;
+import static com.example.chess.Constants.*;
 
-public class InfoCollectionManager {
-    // Bitboards for each piece type
+public class Position {
     private long whitePawns, whiteKnights, whiteBishops, whiteRooks, whiteQueens, whiteKing;
     private long blackPawns, blackKnights, blackBishops, blackRooks, blackQueens, blackKing;
 
 
-    // Constants representing piece types
-    static final double BLACK_ROOK = -5.3;
-    static final double BLACK_KNIGHT = -3;
-    static final double BLACK_BISHOP = -3.3;
-    static final double BLACK_QUEEN = -10;
-    static final double BLACK_KING = -255;
-    static final double BLACK_PAWN = -1;
-    static final double WHITE_ROOK = 5.3;
-    static final double WHITE_KNIGHT = 3;
-    static final double WHITE_BISHOP = 3.3;
-    static final double WHITE_QUEEN = 10;
-    static final double WHITE_KING = 255;
-    static final double WHITE_PAWN = 1;
-
-    public InfoCollectionManager() {
+    public Position() {
         setPieceMap();
     }
-    public InfoCollectionManager(InfoCollectionManager other) {
+    public Position(Position other) {
         this.whitePawns = other.whitePawns;
         this.whiteRooks = other.whiteRooks;
         this.whiteKnights = other.whiteKnights;

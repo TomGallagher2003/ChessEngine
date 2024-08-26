@@ -1,5 +1,6 @@
 package com.example.chess;
 
+import com.example.chess.Validation.MainValidation;
 import com.example.chess.type.EngineMoveTask;
 import com.example.chess.type.Move;
 import javafx.application.Platform;
@@ -13,25 +14,15 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.example.chess.MoveGenerator.generateLegalMovesPlayer;
+import static com.example.chess.Validation.MainValidation.isValidMove;
+import static com.example.chess.Constants.*;
+
 public class BoardManager {
-    // Constants representing piece types
-    static final double BLACK_ROOK = -5.3;
-    static final double BLACK_KNIGHT = -3;
-    static final double BLACK_BISHOP = -3.3;
-    static final double BLACK_QUEEN = -10;
-    static final double BLACK_KING = -255;
-    static final double BLACK_PAWN = -1;
-    static final double WHITE_ROOK = 5.3;
-    static final double WHITE_KNIGHT = 3;
-    static final double WHITE_BISHOP = 3.3;
-    static final double WHITE_QUEEN = 10;
-    static final double WHITE_KING = 255;
-    static final double WHITE_PAWN = 1;
     private HashMap<Double, String> imageDict = new HashMap<>();
     Circle selectedPiece = null;
     GridPane root;
-    InfoCollectionManager collectionManager = new InfoCollectionManager();
-    MoveUtility moveUtil = new MoveUtility();
+    Position collectionManager = new Position();
     ArrayList<Circle> markers = new ArrayList<>();
     boolean playerTurn;
     boolean playerWhite;
@@ -143,14 +134,11 @@ public class BoardManager {
                 int oldCol = GridPane.getColumnIndex(selectedPiece);
                 double pieceVal = collectionManager.getPieceValue(oldRow, oldCol);
 
-                if (pieceVal > 0 && moveUtil.isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager)) {
+                if (pieceVal > 0 && isValidMove(oldRow, oldCol, clickedRow, clickedCol, collectionManager)) {
                     GridPane.setRowIndex(selectedPiece, clickedRow);
                     GridPane.setColumnIndex(selectedPiece, clickedCol);
                     collectionManager.movePiece(oldRow, oldCol, clickedRow, clickedCol, pieceVal);
                     clearSelect();
-                    if (moveUtil.isJustCastled()) {
-                        castle(clickedRow, clickedCol);
-                    }
                     onPlayerMove();
                 }
             }
@@ -199,7 +187,7 @@ public class BoardManager {
         int col = GridPane.getColumnIndex(piece);
         selectedPiece = piece;
         selectedPiece.setStroke(Color.PURPLE);
-        ArrayList<ArrayList<Boolean>> legalMoves = moveUtil.getLegalMoves(row, col, collectionManager);
+        ArrayList<ArrayList<Boolean>> legalMoves = generateLegalMovesPlayer(row, col, collectionManager);
         for (int rowA = 0; rowA < 8; rowA++) {
             for (int colA = 0; colA < 8; colA++) {
                 if (legalMoves.get(rowA).get(colA)) {
@@ -269,21 +257,21 @@ public class BoardManager {
     public void castle(int row, int col) {
         if (row == 0) {
             if (col == 6) {
-                collectionManager.movePiece(0, 7, 0, 5, InfoCollectionManager.BLACK_ROOK);
+                collectionManager.movePiece(0, 7, 0, 5, BLACK_ROOK);
                 Circle piece = findPiece(0, 7);
                 GridPane.setColumnIndex(piece, 5);
             } else {
-                collectionManager.movePiece(0, 0, 0, 3, InfoCollectionManager.BLACK_ROOK);
+                collectionManager.movePiece(0, 0, 0, 3, BLACK_ROOK);
                 Circle piece = findPiece(0, 0);
                 GridPane.setColumnIndex(piece, 3);
             }
         } else {
             if (col == 6) {
-                collectionManager.movePiece(7, 7, 7, 5, InfoCollectionManager.WHITE_ROOK);
+                collectionManager.movePiece(7, 7, 7, 5, WHITE_ROOK);
                 Circle piece = findPiece(7, 7);
                 GridPane.setColumnIndex(piece, 5);
             } else {
-                collectionManager.movePiece(7, 0, 7, 3, InfoCollectionManager.WHITE_ROOK);
+                collectionManager.movePiece(7, 0, 7, 3, WHITE_ROOK);
                 Circle piece = findPiece(7, 0);
                 GridPane.setColumnIndex(piece, 3);
             }
