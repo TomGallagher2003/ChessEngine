@@ -7,10 +7,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 
 public class MainApplication extends Application {
-    public static boolean WHITE = true;
-    public static boolean BLACK = false; // Doesn't work yet
     GridPane root = new GridPane();
-    BoardManager board = new BoardManager(root, WHITE, 5);
+    BoardManager board = new BoardManager(root, 5);
 
     @Override
     public void start(Stage primaryStage) {

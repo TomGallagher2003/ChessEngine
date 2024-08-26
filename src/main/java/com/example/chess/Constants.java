@@ -1,5 +1,7 @@
 package com.example.chess;
 
+import com.example.chess.model.Move;
+
 import java.util.HashMap;
 
 public class Constants {
@@ -19,6 +21,7 @@ public class Constants {
     public static final double WHITE_PAWN = 1;
 
     public static final double MARKER = 0;
+    public static final Move CHECKMATE = new Move(-1, -1, -1, -1);
 
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();
 

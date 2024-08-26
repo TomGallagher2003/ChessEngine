@@ -4,16 +4,19 @@ import com.example.chess.Position;
 
 public class Pawn{
 
-    public static boolean isValidMoveBlackPawn(int oldRow, int newRow, int oldCol, int newCol, Position collectionManager) {
+    public static boolean isValidMoveBlackPawn(int oldRow, int newRow, int oldCol, int newCol, Position position) {
         int rowDiff = newRow - oldRow;
         int colDiff = newCol - oldCol;
 
-        if (rowDiff == 1 && colDiff == 0 && collectionManager.getPieceValue(newRow, newCol) == 0.0) {
+        if (rowDiff == 1 && colDiff == 0 && position.getPieceValue(newRow, newCol) == 0.0) {
             return true;
-        } else if (newRow == 3 && colDiff == 0 && oldRow == 1 && collectionManager.getPieceValue(newRow, newCol) == 0.0 && collectionManager.getPieceValue(newRow - 1, newCol) == 0.0) {
+        } else if (newRow == 3 && colDiff == 0 && oldRow == 1 && position.getPieceValue(newRow, newCol) == 0.0 && position.getPieceValue(newRow - 1, newCol) == 0.0) {
             return true;
         }
-        if (rowDiff == 1 && (colDiff == 1 || colDiff == -1) && collectionManager.getPieceValue(newRow, newCol) > 0) {
+        if (rowDiff == 1 && (colDiff == 1 || colDiff == -1) && position.getPieceValue(newRow, newCol) > 0) {
+            return true;
+        }
+        if (rowDiff == 1 && (colDiff == 1 || colDiff == -1) && position.isPassantablePawn(oldRow, newCol)) {
             return true;
         }
         return false;
@@ -31,6 +34,12 @@ public class Pawn{
         if (rowDiff == -1 && (colDiff == 1 || colDiff == -1) && collectionManager.getPieceValue(newRow, newCol) < 0) {
             return true;
         }
+        if (rowDiff == -1 && (colDiff == 1 || colDiff == -1) && collectionManager.isPassantablePawn(oldRow, newCol)) {
+            return true;
+        }
+
+
         return false;
     }
+
 }

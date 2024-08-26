@@ -6,6 +6,8 @@ public class Position {
     private long whitePawns, whiteKnights, whiteBishops, whiteRooks, whiteQueens, whiteKing;
     private long blackPawns, blackKnights, blackBishops, blackRooks, blackQueens, blackKing;
 
+    private long passantablePawns, unmovedRooks, unmovedKings;
+
 
     public Position() {
         setPieceMap();
@@ -17,30 +19,39 @@ public class Position {
         this.whiteBishops = other.whiteBishops;
         this.whiteQueens = other.whiteQueens;
         this.whiteKing = other.whiteKing;
+
         this.blackPawns = other.blackPawns;
         this.blackRooks = other.blackRooks;
         this.blackKnights = other.blackKnights;
         this.blackBishops = other.blackBishops;
         this.blackQueens = other.blackQueens;
         this.blackKing = other.blackKing;
+
+        this.passantablePawns = other.passantablePawns;
+        this.unmovedRooks = other.unmovedRooks;
+        this.unmovedKings = other.unmovedKings;
     }
 
 
     // Initialize the bitboards for the starting position
     private void setPieceMap() {
-        whitePawns   = 0x00FF000000000000L;  // 6th rank
-        whiteRooks   = 0x8100000000000000L;  // 7th rank corners
-        whiteKnights = 0x4200000000000000L;  // 7th rank knights
-        whiteBishops = 0x2400000000000000L;  // 7th rank bishops
-        whiteQueens  = 0x0800000000000000L;  // 7th rank queen
-        whiteKing    = 0x1000000000000000L;  // 7th rank king
+        whitePawns   = 0x00FF000000000000L;
+        whiteRooks   = 0x8100000000000000L;
+        whiteKnights = 0x4200000000000000L;
+        whiteBishops = 0x2400000000000000L;
+        whiteQueens  = 0x08FFFF0000000000L;
+        whiteKing    = 0x1000000000000000L;
 
-        blackPawns   = 0x000000000000FF00L;  // 1st rank
-        blackRooks   = 0x0000000000000081L;  // 0th rank corners
-        blackKnights = 0x0000000000000042L;  // 0th rank knights
-        blackBishops = 0x0000000000000024L;  // 0th rank bishops
-        blackQueens  = 0x0000000000000008L;  // 0th rank queen
-        blackKing    = 0x0000000000000010L;  // 0th rank king
+        blackPawns   = 0x000000000000FF00L;
+        blackRooks   = 0x0000000000000081L;
+        blackKnights = 0x0000000000000042L;
+        blackBishops = 0x0000000000000024L;
+        blackQueens  = 0x0000000000000008L;
+        blackKing    = 0x0000000000000010L;
+
+        passantablePawns = 0x0000000000000000L;
+        unmovedKings = 0x1000000000000010L;
+        unmovedRooks = 0x8100000000000081L;
     }
 
     // Move a piece from one position to another
@@ -80,15 +91,33 @@ public class Position {
             }
         }
 
-        // Then, move the piece to the new position
+        // move the piece to the new position
+        passantablePawns = 0L;
         if (pieceType == WHITE_PAWN) {
+            if(isPassantablePawn(newRow + 1, newCol)){
+                //en passant
+                blackPawns &= ~(1L << (newRow * 8 + newCol + 8));
+            }
             whitePawns = (whitePawns & ~(1L << oldPos)) | (1L << newPos);
+            if(Math.abs(oldRow - newRow) == 2){
+                passantablePawns = 1L << newPos;
+            }
+
         } else if (pieceType == BLACK_PAWN) {
+            if(isPassantablePawn(newRow - 1, newCol)){
+                //en passant
+                whitePawns &= ~(1L << (newRow * 8 + newCol - 8));
+            }
             blackPawns = (blackPawns & ~(1L << oldPos)) | (1L << newPos);
+            if(Math.abs(oldRow - newRow) == 2){
+                passantablePawns = 1L << newPos;
+            }
         } else if (pieceType == WHITE_ROOK) {
             whiteRooks = (whiteRooks & ~(1L << oldPos)) | (1L << newPos);
+            unmovedRooks &= ~(1L << oldPos);
         } else if (pieceType == BLACK_ROOK) {
             blackRooks = (blackRooks & ~(1L << oldPos)) | (1L << newPos);
+            unmovedRooks &= ~(1L << oldPos);
         } else if (pieceType == WHITE_KNIGHT) {
             whiteKnights = (whiteKnights & ~(1L << oldPos)) | (1L << newPos);
         } else if (pieceType == BLACK_KNIGHT) {
@@ -102,9 +131,13 @@ public class Position {
         } else if (pieceType == BLACK_QUEEN) {
             blackQueens = (blackQueens & ~(1L << oldPos)) | (1L << newPos);
         } else if (pieceType == WHITE_KING) {
+            // castling is handled in the board manager
             whiteKing = (whiteKing & ~(1L << oldPos)) | (1L << newPos);
+            unmovedKings &= ~(1L << oldPos);
         } else if (pieceType == BLACK_KING) {
+            // castling is handled in the board manager
             blackKing = (blackKing & ~(1L << oldPos)) | (1L << newPos);
+            unmovedKings &= ~(1L << oldPos);
         }
     }
 
@@ -126,5 +159,22 @@ public class Position {
         if ((blackKing & (1L << pos)) != 0) return BLACK_KING;
         return 0.0;
     }
+
+    public boolean isPassantablePawn(int row, int col){
+        int pos = row * 8 + col;
+        if ((passantablePawns & (1L << pos)) != 0) return true;
+        return false;
+    }
+    public boolean isUnmovedKing(int row, int col){
+        int pos = row * 8 + col;
+        if ((unmovedKings & (1L << pos)) != 0) return true;
+        return false;
+    }
+    public boolean isUnmovedRook(int row, int col){
+        int pos = row * 8 + col;
+        if ((unmovedRooks & (1L << pos)) != 0) return true;
+        return false;
+    }
+
 
 }
