@@ -39,14 +39,14 @@ public class Position {
         whiteRooks   = 0x8100000000000000L;
         whiteKnights = 0x4200000000000000L;
         whiteBishops = 0x2400000000000000L;
-        whiteQueens  = 0x08FFFF0000000000L;
+        whiteQueens  = 0x0800000000000000L;
         whiteKing    = 0x1000000000000000L;
 
         blackPawns   = 0x000000000000FF00L;
         blackRooks   = 0x0000000000000081L;
         blackKnights = 0x0000000000000042L;
         blackBishops = 0x0000000000000024L;
-        blackQueens  = 0x0000000000000008L;
+        blackQueens  = 0x0000000000FFFF08L;
         blackKing    = 0x0000000000000010L;
 
         passantablePawns = 0x0000000000000000L;

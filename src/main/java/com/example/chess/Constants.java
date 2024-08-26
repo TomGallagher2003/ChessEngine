@@ -23,6 +23,11 @@ public class Constants {
     public static final double MARKER = 0;
     public static final Move CHECKMATE = new Move(-1, -1, -1, -1);
 
+    public static final double BLACK_KING_LOST = -250;
+
+    public static final double WHITE_KING_LOST = -250;
+
+
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();
 
     private static HashMap<Double, String> getImageDict() {
@@ -42,6 +47,8 @@ public class Constants {
         tempImageDict.put(WHITE_PAWN, "images/whitePawn.png");
 
         tempImageDict.put(MARKER, "images/marker.png");
+        tempImageDict.put(WHITE_KING_LOST, "images/whiteKingLost.png");
+        tempImageDict.put(BLACK_KING_LOST, "images/blackKingLost.png");
         return tempImageDict;
     }
 

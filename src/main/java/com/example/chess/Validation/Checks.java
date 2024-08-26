@@ -1,7 +1,13 @@
 package com.example.chess.Validation;
 
 import com.example.chess.Position;
+import com.example.chess.model.Move;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.example.chess.Constants.*;
+import static com.example.chess.MoveGenerator.generateLegalMovesEngine;
 import static com.example.chess.Validation.MainValidation.isValidMove;
 
 
@@ -23,7 +29,7 @@ public class Checks {
             }
         }
 
-        return isSquareUnderAttack(kingRow, kingCol, true, copiedPosition);
+        return isSquareUnderAttack(kingRow, kingCol, false, copiedPosition);
     }
 
     public static boolean putsWhiteInCheck(int oldRow, int newRow, int oldCol, int newCol, Position position) {
@@ -42,7 +48,7 @@ public class Checks {
             }
         }
 
-        return isSquareUnderAttack(kingRow, kingCol, false, positionCopy);
+        return isSquareUnderAttack(kingRow, kingCol, true, positionCopy);
     }
 
     public static boolean isSquareUnderAttack(int row, int col, boolean isWhite, Position position) {
@@ -61,5 +67,13 @@ public class Checks {
             }
         }
         return false;
+    }
+
+    public static boolean whiteInCheckmate(Position position){
+        List<Move> moves = generateLegalMovesEngine(true, position, false);
+        moves = moves.stream()
+                .filter(move -> !putsBlackInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
+                .collect(Collectors.toList());
+        return moves.size() == 0;
     }
 }

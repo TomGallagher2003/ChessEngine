@@ -92,11 +92,12 @@ public class MoveEngine {
                 break;
             }
         }
-        // hopefully the engine never want to hang its king but just in case
+
         if(putsBlackInCheck(bestMove.getOldRow(), bestMove.getNewRow(), bestMove.getOldCol(), bestMove.getNewCol(), position)){
             blackMoves = blackMoves.stream()
-                    .filter(move -> putsBlackInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
+                    .filter(move -> !putsBlackInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
                     .collect(Collectors.toList());
+            System.out.println("size = " + blackMoves.size());
             return getEngineMove(position, depth, blackMoves);
         }
 

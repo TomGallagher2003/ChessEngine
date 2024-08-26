@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import static com.example.chess.MoveGenerator.generateLegalMovesEngine;
 import static com.example.chess.MoveGenerator.generateLegalMovesPlayer;
+import static com.example.chess.Validation.Checks.whiteInCheckmate;
 import static com.example.chess.Validation.MainValidation.isValidMove;
 import static com.example.chess.Constants.*;
 
@@ -26,10 +27,12 @@ public class BoardManager {
     MoveEngine engine = new MoveEngine();
     int moveCount = 0;
     int depth;
+    boolean gameOver;
 
     public BoardManager(GridPane pane, int depth) {
         this.root = pane;
         this.playerTurn = true;
+        this.gameOver = false;
         this.depth = depth  ;
     }
 
@@ -79,7 +82,7 @@ public class BoardManager {
 
     private void setCircleClickHandlers(Circle circle) {
         circle.setOnMouseClicked(event -> {
-            if (!playerTurn) {
+            if (!playerTurn || gameOver) {
                 return;
             }
             Circle clickedCircle = (Circle) event.getSource();
@@ -113,7 +116,7 @@ public class BoardManager {
 
     private void setMarkerClickHandlers(Circle marker) {
         marker.setOnMouseClicked(event -> {
-            if (!playerTurn) {
+            if (!playerTurn || gameOver) {
                 return;
             }
             Circle clickedMarker = (Circle) event.getSource();
@@ -235,6 +238,9 @@ public class BoardManager {
             GridPane.setRowIndex(piece, move.getNewRow());
             GridPane.setColumnIndex(piece, move.getNewCol());
             moveCount++;
+            if(whiteInCheckmate(position)){
+                showCheckmate(false);
+            }
         } catch (Exception e) {
             System.out.println("Exception in makeEngineMove: " + e.getMessage());
             e.printStackTrace();
@@ -287,18 +293,21 @@ public class BoardManager {
             for(int col = 0; col < 8; col++){
                 if(win && position.getPieceValue(row, col) == BLACK_KING){
                     losingKing = findPiece(row, col);
+                    addPieceIcon(losingKing, IMAGE_DICT.get(BLACK_KING_LOST));
                     foundRow = row;
                     foundCol = col;
                 } else if(!win && position.getPieceValue(row, col) == WHITE_KING){
                     losingKing = findPiece(row, col);
+                    addPieceIcon(losingKing, IMAGE_DICT.get(WHITE_KING_LOST));
                     foundRow = row;
                     foundCol = col;
                 }
             }
         }
-        losingKing.setStroke(Color.RED);
-        Rectangle square = (Rectangle) root.getChildren().get(foundRow * 8 + foundCol);
+        Rectangle square = (Rectangle) root.getChildren().get(foundRow * 8 + foundCol + 1);
         square.setFill(Color.RED);
+        playerTurn = false;
+        gameOver = true;
 
     }
 }
