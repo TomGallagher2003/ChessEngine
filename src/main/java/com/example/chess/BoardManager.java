@@ -288,7 +288,7 @@ public class BoardManager {
     public void showCheckmate(boolean win){
         int foundRow = 0;
         int foundCol = 0;
-        Circle losingKing = null;
+        Circle losingKing;
         for(int row = 0; row < 8; row++){
             for(int col = 0; col < 8; col++){
                 if(win && position.getPieceValue(row, col) == BLACK_KING){

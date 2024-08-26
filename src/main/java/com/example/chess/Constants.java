@@ -25,7 +25,7 @@ public class Constants {
 
     public static final double BLACK_KING_LOST = -250;
 
-    public static final double WHITE_KING_LOST = -250;
+    public static final double WHITE_KING_LOST = 250;
 
 
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();

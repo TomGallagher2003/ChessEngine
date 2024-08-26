@@ -72,8 +72,9 @@ public class Checks {
     public static boolean whiteInCheckmate(Position position){
         List<Move> moves = generateLegalMovesEngine(true, position, false);
         moves = moves.stream()
-                .filter(move -> !putsBlackInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
+                .filter(move -> !putsWhiteInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
                 .collect(Collectors.toList());
+        System.out.println(moves.size());
         return moves.size() == 0;
     }
 }
