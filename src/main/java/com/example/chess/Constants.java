@@ -1,8 +1,10 @@
 package com.example.chess;
 
+import com.example.chess.Utility.OpeningParser;
 import com.example.chess.model.Move;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Constants {
 
@@ -26,6 +28,10 @@ public class Constants {
     public static final double BLACK_KING_LOST = -250;
 
     public static final double WHITE_KING_LOST = 250;
+
+    private static OpeningParser openingParser = new OpeningParser();
+
+    public static final List<String> openings = openingParser.parseFile("openings/carlsen.pgn");
 
 
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();

@@ -1,6 +1,7 @@
 package com.example.chess;
 
 import com.example.chess.Utility.EngineMoveTask;
+import com.example.chess.Utility.OpeningParser;
 import com.example.chess.model.Move;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -28,12 +29,15 @@ public class BoardManager {
     int moveCount = 0;
     int depth;
     boolean gameOver;
+    OpeningParser openings;
 
     public BoardManager(GridPane pane, int depth) {
         this.root = pane;
         this.playerTurn = true;
         this.gameOver = false;
         this.depth = depth  ;
+        this.openings = new OpeningParser();
+        openings.parseFile("openings/carlsen.pgn");
     }
 
     public void setBoard() {
