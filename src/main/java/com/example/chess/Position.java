@@ -176,5 +176,28 @@ public class Position {
         return false;
     }
 
+    public double evaluate() {
+        double totalEvaluation = 0.0;
+
+        // Sum the value of white pieces
+        totalEvaluation += Long.bitCount(whitePawns) * WHITE_PAWN;
+        totalEvaluation += Long.bitCount(whiteKnights) * WHITE_KNIGHT;
+        totalEvaluation += Long.bitCount(whiteBishops) * WHITE_BISHOP;
+        totalEvaluation += Long.bitCount(whiteRooks) * WHITE_ROOK;
+        totalEvaluation += Long.bitCount(whiteQueens) * WHITE_QUEEN;
+        totalEvaluation += Long.bitCount(whiteKing) * WHITE_KING;
+
+        // Subtract the value of black pieces
+        totalEvaluation -= Long.bitCount(blackPawns) * BLACK_PAWN;
+        totalEvaluation -= Long.bitCount(blackKnights) * BLACK_KNIGHT;
+        totalEvaluation -= Long.bitCount(blackBishops) * BLACK_BISHOP;
+        totalEvaluation -= Long.bitCount(blackRooks) * BLACK_ROOK;
+        totalEvaluation -= Long.bitCount(blackQueens) * BLACK_QUEEN;
+        totalEvaluation -= Long.bitCount(blackKing) * BLACK_KING;
+
+        return totalEvaluation;
+    }
+
+
 
 }

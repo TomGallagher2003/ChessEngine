@@ -2,7 +2,9 @@ package com.example.chess;
 
 import com.example.chess.model.Move;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.example.chess.MoveGenerator.generateLegalMovesEngine;
@@ -13,26 +15,17 @@ import static com.example.chess.Constants.*;
 public class MoveEngine {
 
 
-    private static Position simulateMove(Move move, Position collectionManager) {
-        Position newCollectionManager = new Position(collectionManager);
-        newCollectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol(), collectionManager.getPieceValue(move.getOldRow(), move.getOldCol()));
+    private static Position simulateMove(Move move, Position position) {
+        Position newCollectionManager = new Position(position);
+        newCollectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol(), position.getPieceValue(move.getOldRow(), move.getOldCol()));
         return newCollectionManager;
     }
 
-    private static double evaluateBoard(Position collectionManager) {
-        double totalValue = 0.0;
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                totalValue += collectionManager.getPieceValue(row, col);
-            }
-        }
-        return totalValue;
-    }
 
     private static double minimax(Position position, int depth, double alpha, double beta, boolean maximizingPlayer) {
 
         if (depth == 0) {
-            double eval = evaluateBoard(position);
+            double eval = position.evaluate();
             return eval;
         }
 
@@ -110,10 +103,15 @@ public class MoveEngine {
     }
 
     public static Move getOpeningMove(String playedMoves, Position position){
+        List<String> options = new ArrayList<>();
         for(String opening : OPENINGS){
             if(opening.startsWith(playedMoves)){
-                return getMoveFromString(opening.split(playedMoves)[1].trim().split("\\s+")[0], position);
+                options.add(opening.split(playedMoves)[1].trim().split("\\s+")[0]);
             }
+        }
+        if(options.size() > 0){
+            Random random = new Random();
+            return getMoveFromString(options.get(random.nextInt(options.size())), position);
         }
         return null;
     }
