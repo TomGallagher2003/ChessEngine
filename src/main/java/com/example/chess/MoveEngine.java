@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.chess.MoveGenerator.generateLegalMovesEngine;
+import static com.example.chess.Utility.OpeningParser.getMoveFromString;
 import static com.example.chess.Validation.Checks.putsBlackInCheck;
 import static com.example.chess.Constants.*;
 
 public class MoveEngine {
 
 
-    private Position simulateMove(Move move, Position collectionManager) {
+    private static Position simulateMove(Move move, Position collectionManager) {
         Position newCollectionManager = new Position(collectionManager);
         newCollectionManager.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol(), collectionManager.getPieceValue(move.getOldRow(), move.getOldCol()));
         return newCollectionManager;
     }
 
-    private double evaluateBoard(Position collectionManager) {
+    private static double evaluateBoard(Position collectionManager) {
         double totalValue = 0.0;
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -28,7 +29,7 @@ public class MoveEngine {
         return totalValue;
     }
 
-    private double minimax(Position position, int depth, double alpha, double beta, boolean maximizingPlayer) {
+    private static double minimax(Position position, int depth, double alpha, double beta, boolean maximizingPlayer) {
 
         if (depth == 0) {
             double eval = evaluateBoard(position);
@@ -67,7 +68,7 @@ public class MoveEngine {
 
 
 
-    public Move getEngineMove(Position position, int depth, List<Move> blackMoves) {
+    public static Move getEngineMove(Position position, int depth, List<Move> blackMoves) {
         if(blackMoves.isEmpty()){
             return CHECKMATE;
         }
@@ -97,15 +98,23 @@ public class MoveEngine {
             blackMoves = blackMoves.stream()
                     .filter(move -> !putsBlackInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
                     .collect(Collectors.toList());
-            System.out.println("size = " + blackMoves.size());
             return getEngineMove(position, depth, blackMoves);
         }
 
         return bestMove;
     }
 
-    public Move getEngineMove(Position position, int depth){
+    public static Move getEngineMove(Position position, int depth){
         List<Move> blackMoves = generateLegalMovesEngine(false, position, true);
         return getEngineMove(position, depth, blackMoves);
+    }
+
+    public static Move getOpeningMove(String playedMoves, Position position){
+        for(String opening : OPENINGS){
+            if(opening.startsWith(playedMoves)){
+                return getMoveFromString(opening.split(playedMoves)[1].trim().split("\\s+")[0], position);
+            }
+        }
+        return null;
     }
 }

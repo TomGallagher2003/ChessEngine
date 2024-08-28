@@ -3,6 +3,7 @@ package com.example.chess;
 import com.example.chess.Utility.OpeningParser;
 import com.example.chess.model.Move;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class Constants {
 
     private static OpeningParser openingParser = new OpeningParser();
 
-    public static final List<String> openings = openingParser.parseFile("openings/carlsen.pgn");
+    public static final List<String> OPENING_FILENAMES = List.of("carlsen", "radjabov", "kasparov", "nepomniachtchi");
+    public static final List<String> OPENINGS = openingParser.parseOpenings(OPENING_FILENAMES);
 
 
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();

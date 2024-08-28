@@ -54,4 +54,17 @@ public class MoveGenerator {
         }
         return resultMap;
     }
+
+    // used to find the current location of the piece being referenced in the opening string
+    public static Move findPieceToMove(int newRow, int newCol, Double piece, Position position, Integer oldCol){
+        for(Move move: generateLegalMovesEngine(false, position, false)){
+            if(move.getNewCol() == newCol && move.getNewRow() == newRow
+                    && position.getPieceValue(move.getOldRow(), move.getOldCol()) == piece){
+                    if(oldCol == null || move.getOldCol() == oldCol){
+                        return move;
+                    }
+            }
+        }
+        return null;
+    }
 }

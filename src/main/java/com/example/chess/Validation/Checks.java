@@ -74,7 +74,6 @@ public class Checks {
         moves = moves.stream()
                 .filter(move -> !putsWhiteInCheck(move.getOldRow(), move.getNewRow(), move.getOldCol(), move.getNewCol(), position))
                 .collect(Collectors.toList());
-        System.out.println(moves.size());
         return moves.size() == 0;
     }
 }
