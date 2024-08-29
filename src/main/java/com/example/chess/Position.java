@@ -192,22 +192,31 @@ public class Position {
         totalEvaluation += Long.bitCount(blackQueens) * BLACK_QUEEN;
         totalEvaluation += Long.bitCount(blackKing) * BLACK_KING;
 
-        // Positional bonuses for pieces on good squares
-        totalEvaluation += Long.bitCount(whiteKnights & KNIGHT_GOOD_SQUARES) * 0.5; // Example bonus
-        totalEvaluation += Long.bitCount(whiteBishops & BISHOP_GOOD_SQUARES) * 0.5;
-        totalEvaluation += Long.bitCount(whiteRooks & ROOK_GOOD_SQUARES) * 0.5;
-        totalEvaluation += Long.bitCount(whiteQueens & QUEEN_GOOD_SQUARES) * 0.5;
-        totalEvaluation += Long.bitCount(whiteKing & KING_GOOD_SQUARES) * 0.5;
-        totalEvaluation += Long.bitCount(whitePawns & PAWN_GOOD_SQUARES) * 0.5;
+        totalEvaluation += getPositionalBonus();
 
-        totalEvaluation -= Long.bitCount(blackKnights & KNIGHT_GOOD_SQUARES) * 0.5;
-        totalEvaluation -= Long.bitCount(blackBishops & BISHOP_GOOD_SQUARES) * 0.5;
-        totalEvaluation -= Long.bitCount(blackRooks & ROOK_GOOD_SQUARES) * 0.5;
-        totalEvaluation -= Long.bitCount(blackQueens & QUEEN_GOOD_SQUARES) * 0.5;
-        totalEvaluation -= Long.bitCount(blackKing & KING_GOOD_SQUARES) * 0.5;
-        totalEvaluation -= Long.bitCount(blackPawns & PAWN_GOOD_SQUARES) * 0.5;
+        //TODO more bonuses to make the eval better and guide the play-style
 
         return totalEvaluation;
+    }
+
+    private double getPositionalBonus(){
+        double bonus = 0.0;
+
+        bonus += Long.bitCount(whiteKnights & KNIGHT_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus += Long.bitCount(whiteBishops & BISHOP_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus += Long.bitCount(whiteRooks & ROOK_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus += Long.bitCount(whiteQueens & QUEEN_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus += Long.bitCount(whiteKing & KING_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus += Long.bitCount(whitePawns & PAWN_GOOD_SQUARES) * POSITIONAL_BONUS;
+
+        bonus -= Long.bitCount(blackKnights & KNIGHT_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus -= Long.bitCount(blackBishops & BISHOP_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus -= Long.bitCount(blackRooks & ROOK_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus -= Long.bitCount(blackQueens & QUEEN_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus -= Long.bitCount(blackKing & KING_GOOD_SQUARES) * POSITIONAL_BONUS;
+        bonus -= Long.bitCount(blackPawns & PAWN_GOOD_SQUARES) * POSITIONAL_BONUS;
+
+        return bonus;
     }
 
 

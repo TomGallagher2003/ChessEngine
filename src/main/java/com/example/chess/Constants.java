@@ -41,6 +41,8 @@ public class Constants {
     public static final long KING_GOOD_SQUARES   = 0x000000000000003CL;
     public static final long PAWN_GOOD_SQUARES   = 0x00000000FF000000L;
 
+    public static final double POSITIONAL_BONUS = 0.35;
+
 
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();
 
