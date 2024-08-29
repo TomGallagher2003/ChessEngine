@@ -59,7 +59,6 @@ public class Position {
         int oldPos = oldRow * 8 + oldCol;
         int newPos = newRow * 8 + newCol;
 
-        long moveMask = (1L << oldPos) | (1L << newPos);
 
         // First, handle the capture by clearing the captured piece from the bitboards
         double capturedPiece = getPieceValue(newRow, newCol);
@@ -179,7 +178,6 @@ public class Position {
     public double evaluate() {
         double totalEvaluation = 0.0;
 
-        // Sum the value of white pieces
         totalEvaluation += Long.bitCount(whitePawns) * WHITE_PAWN;
         totalEvaluation += Long.bitCount(whiteKnights) * WHITE_KNIGHT;
         totalEvaluation += Long.bitCount(whiteBishops) * WHITE_BISHOP;
@@ -187,13 +185,27 @@ public class Position {
         totalEvaluation += Long.bitCount(whiteQueens) * WHITE_QUEEN;
         totalEvaluation += Long.bitCount(whiteKing) * WHITE_KING;
 
-        // Subtract the value of black pieces
-        totalEvaluation -= Long.bitCount(blackPawns) * BLACK_PAWN;
-        totalEvaluation -= Long.bitCount(blackKnights) * BLACK_KNIGHT;
-        totalEvaluation -= Long.bitCount(blackBishops) * BLACK_BISHOP;
-        totalEvaluation -= Long.bitCount(blackRooks) * BLACK_ROOK;
-        totalEvaluation -= Long.bitCount(blackQueens) * BLACK_QUEEN;
-        totalEvaluation -= Long.bitCount(blackKing) * BLACK_KING;
+        totalEvaluation += Long.bitCount(blackPawns) * BLACK_PAWN;
+        totalEvaluation += Long.bitCount(blackKnights) * BLACK_KNIGHT;
+        totalEvaluation += Long.bitCount(blackBishops) * BLACK_BISHOP;
+        totalEvaluation += Long.bitCount(blackRooks) * BLACK_ROOK;
+        totalEvaluation += Long.bitCount(blackQueens) * BLACK_QUEEN;
+        totalEvaluation += Long.bitCount(blackKing) * BLACK_KING;
+
+        // Positional bonuses for pieces on good squares
+        totalEvaluation += Long.bitCount(whiteKnights & KNIGHT_GOOD_SQUARES) * 0.5; // Example bonus
+        totalEvaluation += Long.bitCount(whiteBishops & BISHOP_GOOD_SQUARES) * 0.5;
+        totalEvaluation += Long.bitCount(whiteRooks & ROOK_GOOD_SQUARES) * 0.5;
+        totalEvaluation += Long.bitCount(whiteQueens & QUEEN_GOOD_SQUARES) * 0.5;
+        totalEvaluation += Long.bitCount(whiteKing & KING_GOOD_SQUARES) * 0.5;
+        totalEvaluation += Long.bitCount(whitePawns & PAWN_GOOD_SQUARES) * 0.5;
+
+        totalEvaluation -= Long.bitCount(blackKnights & KNIGHT_GOOD_SQUARES) * 0.5;
+        totalEvaluation -= Long.bitCount(blackBishops & BISHOP_GOOD_SQUARES) * 0.5;
+        totalEvaluation -= Long.bitCount(blackRooks & ROOK_GOOD_SQUARES) * 0.5;
+        totalEvaluation -= Long.bitCount(blackQueens & QUEEN_GOOD_SQUARES) * 0.5;
+        totalEvaluation -= Long.bitCount(blackKing & KING_GOOD_SQUARES) * 0.5;
+        totalEvaluation -= Long.bitCount(blackPawns & PAWN_GOOD_SQUARES) * 0.5;
 
         return totalEvaluation;
     }

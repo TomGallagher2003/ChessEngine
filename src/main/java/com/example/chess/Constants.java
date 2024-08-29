@@ -34,6 +34,12 @@ public class Constants {
 
     public static final List<String> OPENING_FILENAMES = List.of("carlsen", "radjabov", "kasparov", "nepomniachtchi");
     public static final List<String> OPENINGS = openingParser.parseOpenings(OPENING_FILENAMES);
+    public static final long KNIGHT_GOOD_SQUARES = 0x0000000000240000L;
+    public static final long BISHOP_GOOD_SQUARES = 0x0000000000180000L;
+    public static final long ROOK_GOOD_SQUARES   = 0x8100000000000081L;
+    public static final long QUEEN_GOOD_SQUARES  = 0x0000001818000000L;
+    public static final long KING_GOOD_SQUARES   = 0x000000000000003CL;
+    public static final long PAWN_GOOD_SQUARES   = 0x00000000FF000000L;
 
 
     public static final HashMap<Double, String> IMAGE_DICT = getImageDict();

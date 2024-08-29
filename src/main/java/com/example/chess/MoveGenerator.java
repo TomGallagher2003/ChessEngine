@@ -48,10 +48,11 @@ public class MoveGenerator {
         for (int row = 0; row < 8; row++) {
             ArrayList<Boolean> temp = new ArrayList<>();
             for (int col = 0; col < 8; col++) {
-                temp.add(isValidMove(oldRow, oldCol, row, col, position) && !putsWhiteInCheck(oldRow, oldCol, row, col, position));
+                temp.add(isValidMove(oldRow, oldCol, row, col, position) && !putsWhiteInCheck(oldRow, row, oldCol, col, position));
             }
             resultMap.add(temp);
         }
+
         return resultMap;
     }
 
