@@ -143,10 +143,10 @@ public class BoardManager {
                     }
                     GridPane.setRowIndex(selectedPiece, clickedRow);
                     GridPane.setColumnIndex(selectedPiece, clickedCol);
-                    position.movePiece(oldRow, oldCol, clickedRow, clickedCol, pieceVal);
                     playedMoves += moveCount + "." +
-                            getMoveString(oldCol, clickedRow, clickedCol, pieceVal, false)
+                            getMoveString(oldCol, clickedRow, clickedCol, pieceVal, false, position)
                             + " ";
+                    position.movePiece(oldRow, oldCol, clickedRow, clickedCol, pieceVal);
                     clearSelect();
                     onPlayerMove();
                 }
@@ -237,7 +237,7 @@ public class BoardManager {
 
         System.out.println("Engine generated move: " + getMoveString(move.getOldCol(),
                 move.getNewRow(), move.getNewCol(), position.getPieceValue(move.getOldRow(), move.getOldCol()),
-                position.getPieceValue(move.getNewRow(), move.getNewCol()) > 0) );
+                position.getPieceValue(move.getNewRow(), move.getNewCol()) > 0, position) );
 
         if (move.equals(CHECKMATE)) {
             showCheckmate(true);
@@ -247,11 +247,11 @@ public class BoardManager {
         boolean isCapture = position.getPieceValue(move.getNewRow(), move.getNewCol()) > 0;
         purgeSquare(move.getNewRow(), move.getNewCol());
         double pieceVal = position.getPieceValue(move.getOldRow(), move.getOldCol());
+        playedMoves += getMoveString( move.getOldCol(), move.getNewRow(), move.getNewCol(), pieceVal, isCapture, position) + " ";
         position.movePiece(move.getOldRow(), move.getOldCol(), move.getNewRow(), move.getNewCol(), pieceVal);
         Circle piece = findPiece(move.getOldRow(), move.getOldCol());
         GridPane.setRowIndex(piece, move.getNewRow());
         GridPane.setColumnIndex(piece, move.getNewCol());
-        playedMoves += getMoveString( move.getOldCol(), move.getNewRow(), move.getNewCol(), pieceVal, isCapture) + " ";
         moveCount++;
         if(whiteInCheckmate(position)){
             showCheckmate(false);

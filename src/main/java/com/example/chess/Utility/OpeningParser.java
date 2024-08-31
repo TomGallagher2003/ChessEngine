@@ -41,7 +41,7 @@ public class OpeningParser {
         }
     }
 
-    public static String getMoveString(int oldCol, int newRow, int newCol, Double pieceVal, boolean isCapture){
+    public static String getMoveString(int oldCol, int newRow, int newCol, Double pieceVal, boolean isCapture, Position position){
         String move = "";
 
         if(pieceVal == WHITE_KING || pieceVal == BLACK_KING){

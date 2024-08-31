@@ -34,12 +34,12 @@ public class Constants {
 
     public static final List<String> OPENING_FILENAMES = List.of("carlsen", "radjabov", "kasparov", "nepomniachtchi");
     public static final List<String> OPENINGS = openingParser.parseOpenings(OPENING_FILENAMES);
-    public static final long KNIGHT_GOOD_SQUARES = 0x0000000000240000L;
-    public static final long BISHOP_GOOD_SQUARES = 0x0000000000180000L;
-    public static final long ROOK_GOOD_SQUARES   = 0x8100000000000081L;
-    public static final long QUEEN_GOOD_SQUARES  = 0x0000001818000000L;
-    public static final long KING_GOOD_SQUARES   = 0x000000000000003CL;
-    public static final long PAWN_GOOD_SQUARES   = 0x00000000FF000000L;
+    public static final long KNIGHT_GOOD_SQUARES = 0x00003C3C3C3C0000L;
+    public static final long BISHOP_GOOD_SQUARES = 0x00423C3C3C3C4200L;
+    public static final long ROOK_GOOD_SQUARES   = 0xffff00000000ffffL;
+    public static final long QUEEN_GOOD_SQUARES  = 0x0000000000000000L; //TODO research queen best squares
+    public static final long KING_GOOD_SQUARES   = 0xC3000000000000C3L;
+    public static final long PAWN_GOOD_SQUARES   = 0x0000003C3C000000L;
 
     public static final double POSITIONAL_BONUS = 0.35;
 
