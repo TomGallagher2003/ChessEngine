@@ -252,6 +252,9 @@ public class BoardManager {
         Circle piece = findPiece(move.getOldRow(), move.getOldCol());
         GridPane.setRowIndex(piece, move.getNewRow());
         GridPane.setColumnIndex(piece, move.getNewCol());
+        if(pieceVal == WHITE_KING && Math.abs(move.getNewCol() - move.getOldCol()) == 2){
+            castle(move.getNewRow(), move.getNewCol());
+        }
         moveCount++;
         if(whiteInCheckmate(position)){
             showCheckmate(false);
