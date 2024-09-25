@@ -2,9 +2,8 @@ package com.example.chess;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 public class MainApplication extends Application {
     GridPane root = new GridPane();
