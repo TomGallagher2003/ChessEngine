@@ -21,6 +21,7 @@ public class MainApplication extends Application {
 
 
     public static void main(String[] args) {
+        System.out.println("Launching the app");
         launch(args);
     }
 }
