@@ -148,6 +148,9 @@ public class BoardManager {
                             + " ";
                     position.movePiece(oldRow, oldCol, clickedRow, clickedCol, pieceVal);
                     clearSelect();
+                    if (pieceVal == WHITE_PAWN && clickedRow == 0){
+                        promote(clickedRow, clickedCol);
+                    }
                     onPlayerMove();
                 }
             }
@@ -323,5 +326,10 @@ public class BoardManager {
         playerTurn = false;
         gameOver = true;
 
+    }
+    public void promote(int row, int col){
+        String newImage = row == 0 ? IMAGE_DICT.get(WHITE_QUEEN) : IMAGE_DICT.get(BLACK_QUEEN);
+        Circle piece = findPiece(row, col);
+        addPieceIcon(piece, newImage);
     }
 }

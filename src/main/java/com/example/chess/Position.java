@@ -94,12 +94,17 @@ public class Position {
         passantablePawns = 0L;
         if (pieceType == WHITE_PAWN) {
             if(isPassantablePawn(newRow + 1, newCol)){
-                //en passant
+                // En passant
                 blackPawns &= ~(1L << (newRow * 8 + newCol + 8));
             }
             whitePawns = (whitePawns & ~(1L << oldPos)) | (1L << newPos);
             if(Math.abs(oldRow - newRow) == 2){
                 passantablePawns = 1L << newPos;
+            }
+            if(newRow == 0){
+                // Promotion
+                whitePawns = whitePawns & ~(1L << newPos);
+                whiteQueens = whiteQueens | (1L << newPos);
             }
 
         } else if (pieceType == BLACK_PAWN) {
@@ -110,6 +115,11 @@ public class Position {
             blackPawns = (blackPawns & ~(1L << oldPos)) | (1L << newPos);
             if(Math.abs(oldRow - newRow) == 2){
                 passantablePawns = 1L << newPos;
+            }
+            if(newRow == 7){
+                // Promotion
+                blackPawns = blackPawns & ~(1L << newPos);
+                blackQueens = blackQueens | (1L << newPos);
             }
         } else if (pieceType == WHITE_ROOK) {
             whiteRooks = (whiteRooks & ~(1L << oldPos)) | (1L << newPos);
