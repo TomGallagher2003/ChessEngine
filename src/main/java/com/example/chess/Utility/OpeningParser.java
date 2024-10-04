@@ -6,6 +6,8 @@ import com.example.chess.model.Move;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +19,26 @@ public class OpeningParser {
     public List<String> parseOpenings(List<String> filenames){
         List<String> openingStrings = new ArrayList<>();
         for(String filename: filenames){
-            parseFile("openings/" + filename + ".pgn", openingStrings);
+            parseFile(filename + ".pgn", openingStrings);
         }
         return openingStrings;
     }
 
     public void parseFile(String filename, List<String> openingStrings){
+        URL resource = getClass().getClassLoader().getResource(filename);
+        if (resource == null) {
+            System.err.println("Resource not found: " + filename);
+            return;
+        }
 
-        String filePath = getClass().getClassLoader().getResource(filename).getPath();
+        String filePath;
+        try {
+            filePath = URLDecoder.decode(resource.getPath(), "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -57,10 +71,9 @@ public class OpeningParser {
             move += pieceString;
         }
 
-
         if (isCapture) {
             if (pieceString.equals("")) {
-                move += (char) ('a' + oldCol);  // for pawn captures to show which pawn captured
+                move += (char) ('a' + oldCol);
             }
             move += "x";
         }
@@ -88,6 +101,7 @@ public class OpeningParser {
             return "";
         }
     }
+
     private static Double getPieceFromString(String pieceString) {
         switch (pieceString) {
             case "K":
@@ -104,7 +118,6 @@ public class OpeningParser {
                 return BLACK_PAWN;
         }
     }
-
 
     public static Move getMoveFromString(String moveString, Position position){
         String[] chars = moveString.split("");
@@ -131,6 +144,5 @@ public class OpeningParser {
         }
         return findPieceToMove(newRow, newCol, pieceVal, position, oldCol);
     }
-
 
 }

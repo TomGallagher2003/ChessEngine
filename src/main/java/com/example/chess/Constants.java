@@ -48,23 +48,23 @@ public class Constants {
 
     private static HashMap<Double, String> getImageDict() {
         HashMap<Double, String> tempImageDict = new HashMap<>();
-        tempImageDict.put(BLACK_ROOK, "images/blackRook.png");
-        tempImageDict.put(BLACK_KNIGHT, "images/blackKnight.png");
-        tempImageDict.put(BLACK_BISHOP, "images/blackBishop.png");
-        tempImageDict.put(BLACK_QUEEN, "images/BlackQueen.png");
-        tempImageDict.put(BLACK_KING, "images/BlackKing.png");
-        tempImageDict.put(BLACK_PAWN, "images/blackPawn.png");
+        tempImageDict.put(BLACK_ROOK, "blackRook.png");
+        tempImageDict.put(BLACK_KNIGHT, "blackKnight.png");
+        tempImageDict.put(BLACK_BISHOP, "blackBishop.png");
+        tempImageDict.put(BLACK_QUEEN, "BlackQueen.png");
+        tempImageDict.put(BLACK_KING, "BlackKing.png");
+        tempImageDict.put(BLACK_PAWN, "blackPawn.png");
 
-        tempImageDict.put(WHITE_ROOK, "images/whiteRook.png");
-        tempImageDict.put(WHITE_KNIGHT, "images/whiteKnight.png");
-        tempImageDict.put(WHITE_BISHOP, "images/whiteBishop.png");
-        tempImageDict.put(WHITE_QUEEN, "images/whiteQueen.png");
-        tempImageDict.put(WHITE_KING, "images/whiteKing.png");
-        tempImageDict.put(WHITE_PAWN, "images/whitePawn.png");
+        tempImageDict.put(WHITE_ROOK, "whiteRook.png");
+        tempImageDict.put(WHITE_KNIGHT, "whiteKnight.png");
+        tempImageDict.put(WHITE_BISHOP, "whiteBishop.png");
+        tempImageDict.put(WHITE_QUEEN, "whiteQueen.png");
+        tempImageDict.put(WHITE_KING, "whiteKing.png");
+        tempImageDict.put(WHITE_PAWN, "whitePawn.png");
 
-        tempImageDict.put(MARKER, "images/marker.png");
-        tempImageDict.put(WHITE_KING_LOST, "images/whiteKingLost.png");
-        tempImageDict.put(BLACK_KING_LOST, "images/blackKingLost.png");
+        tempImageDict.put(MARKER, "marker.png");
+        tempImageDict.put(WHITE_KING_LOST, "whiteKingLost.png");
+        tempImageDict.put(BLACK_KING_LOST, "blackKingLost.png");
         return tempImageDict;
     }
 
